@@ -1,0 +1,6 @@
+[submodule "parrot/vendor/spdlog"]
+	path = parrot/vendor/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "parrot/vendor/GLFW"]
+	path = parrot/vendor/GLFW
+	url = https://github.com/glfw/glfw
