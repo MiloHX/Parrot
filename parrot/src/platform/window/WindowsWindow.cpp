@@ -4,6 +4,8 @@
 #include "parrot/event/KeyEvent.h"
 #include "parrot/event/MouseEvent.h"
 
+#include <glad/glad.h>
+
 namespace parrot {
 
     static bool s_is_GLFW_initialized = false;
@@ -40,6 +42,11 @@ namespace parrot {
 
         m_window = glfwCreateWindow((int)props.width, (int)props.height, m_data.title.c_str(), nullptr, nullptr);
         glfwMakeContextCurrent(m_window);
+
+        // Glad
+        int glad_status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        PR_INT_ASSERT(glad_status, "Initialize Glad failed")
+
         glfwSetWindowUserPointer(m_window, &m_data);
         setVSync(true);
 

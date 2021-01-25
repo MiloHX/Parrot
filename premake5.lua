@@ -14,8 +14,10 @@ output_dir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- Include directories relative to root folder
 include_dir = {}
 include_dir["GLFW"] = "parrot/vendor/GLFW/include"
+include_dir["Glad"] = "parrot/vendor/Glad/include"
 
 include "parrot/vendor/GLFW"
+include "parrot/vendor/Glad"
 
 
 -- Parrot Project Definition --
@@ -39,11 +41,13 @@ project "parrot"
     includedirs {
         "%{prj.name}/src",
         "%{prj.name}/vendor/spdlog/include",
-        "%{include_dir.GLFW}"
+        "%{include_dir.GLFW}",
+        "%{include_dir.Glad}"
     }
 
     links {
         "GLFW",
+        "Glad",
         "opengl32.lib"
     }
 
@@ -54,7 +58,8 @@ project "parrot"
 
         defines {
             "PR_PLATFORM_WINDOWS",
-            "PR_BUILD_DLL"
+            "PR_BUILD_DLL",
+            "GLFW_INCLUDE_NONE"
         }
     
         postbuildcommands {
