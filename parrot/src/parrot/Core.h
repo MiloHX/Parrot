@@ -14,6 +14,10 @@
 
 // Assertion
 
+#ifdef PR_DEBUG
+    #define PR_ENABLE_ASSERTS
+#endif
+
 #ifdef PR_ENABLE_ASSERTS
     #define PR_ASSERT(x, ...)     { if(!(x)) { PR_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
     #define PR_INT_ASSERT(x, ...) { if(!(x)) { PR_INT_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
