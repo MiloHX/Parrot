@@ -5,11 +5,19 @@ public:
     ExmapleLayer() : Layer("Example") {}
 
     void onUpdate() override {
-        // PR_INFO("Example Updating...");
+        if (parrot::Input::isKeyPressed(PR_KEY_A)) {
+            PR_INFO("A is pressed (Poll)");
+        }
     }
 
     void onEvent(parrot::Event& event) override {
-        PR_TRACE("{0}", event);
+        if (event.getEventType() == parrot::EventType::Key_Pressed) {
+            parrot::KeyPressedEvent& e = static_cast<parrot::KeyPressedEvent&>(event);
+            if (e.getKeyCode() == PR_KEY_F) {
+                PR_INFO("F is pressed");
+            }
+            PR_INFO("{0}", (char)e.getKeyCode());
+        }
     }
 };
 
