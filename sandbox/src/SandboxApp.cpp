@@ -25,7 +25,6 @@ class Sandbox : public parrot::Application {
 public:
     Sandbox() {
         pushLayer(new ExmapleLayer());
-        pushOverlay(new parrot::ImGuiLayer());
     }
 
     ~Sandbox() {

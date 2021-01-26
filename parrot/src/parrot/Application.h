@@ -5,6 +5,7 @@
 #include "LayerStack.h"
 #include "event/Event.h"
 #include "event/ApplicationEvent.h"
+#include "imgui/ImGuiLayer.h"
 
 namespace parrot {
 
@@ -26,6 +27,7 @@ namespace parrot {
         bool onWindowClose(Event& e);
 
         std::unique_ptr<Window> m_window;
+        ImGuiLayer*             m_imgui_layer;
         bool                    m_running = true;
         LayerStack              m_layer_stack;
 

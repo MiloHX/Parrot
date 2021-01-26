@@ -12,22 +12,11 @@ namespace parrot {
         ImGuiLayer();
         ~ImGuiLayer();
 
-        void onAttach() override;
-        void onDetach() override;
-        void onUpdate() override;
-        void onEvent(Event& event) override;
-    private:
-        bool onMouseButtonPressed (MouseButtonPressedEvent & event);
-        bool onMouseButtonReleased(MouseButtonReleasedEvent& event);
-        bool onMouseMoved         (MouseMovedEvent         & event);
-        bool onMouseScrolled      (MouseScrolledEvent      & event);
-        bool onKeyPressed         (KeyPressedEvent         & event);
-        bool onKeyReleased        (KeyReleasedEvent        & event);
-        bool onKeyTyped           (KeyTypedEvent           & event);
-        bool onWindowResized      (WindowResizedEvent      & event);
-
-        float m_time = 0.0f;
-
+        virtual void onAttach     () override;
+        virtual void onDetach     () override;
+        virtual void onImGuiRender() override;
+        void begin();
+        void end  ();
     };
    
 }

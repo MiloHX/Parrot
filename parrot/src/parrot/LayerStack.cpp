@@ -4,7 +4,6 @@
 namespace parrot {
 
     LayerStack::LayerStack() {
-        m_layer_insert = m_layer_list.begin();
     }
 
     LayerStack::~LayerStack() {
@@ -14,7 +13,8 @@ namespace parrot {
     }
 
     void LayerStack::pushLayer(Layer* layer) {
-        m_layer_insert = m_layer_list.emplace(m_layer_insert, layer);
+        m_layer_list.emplace(m_layer_list.begin() + m_layer_insert_index, layer);
+        ++m_layer_insert_index;
     }
 
     void LayerStack::pushOverlay(Layer* overlay) {
@@ -25,7 +25,7 @@ namespace parrot {
         auto it = std::find(m_layer_list.begin(), m_layer_list.end(), layer);
         if (it != m_layer_list.end()) {
             m_layer_list.erase(it);
-            m_layer_insert--;
+            --m_layer_insert_index;
         }
     }
 

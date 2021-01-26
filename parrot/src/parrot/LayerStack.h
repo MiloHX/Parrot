@@ -19,7 +19,7 @@ namespace parrot {
         std::vector<Layer*>::iterator end  () { return m_layer_list.end  (); }
     private:
         std::vector<Layer*>           m_layer_list;
-        std::vector<Layer*>::iterator m_layer_insert;
+        unsigned int                  m_layer_insert_index = 0;
     };
 
 }

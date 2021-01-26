@@ -14,6 +14,8 @@ namespace parrot {
         s_instance = this;
         m_window = std::unique_ptr<Window>(Window::create());
         m_window->setEventCallBack(PR_BIND_EVENT_FUNC(Application::onEvent));
+        m_imgui_layer = new ImGuiLayer();
+        pushOverlay(m_imgui_layer);
     }
 
     Application::~Application() {
@@ -38,6 +40,12 @@ namespace parrot {
             for (Layer* layer : m_layer_stack) {
                 layer->onUpdate();
             }
+
+            m_imgui_layer->begin();
+                for (Layer* layer : m_layer_stack) {
+                    layer->onImGuiRender();
+                }
+            m_imgui_layer->end();
 
             m_window->onUpdate();
         };
