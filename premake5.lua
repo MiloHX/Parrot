@@ -15,9 +15,11 @@ output_dir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 include_dir = {}
 include_dir["GLFW"] = "parrot/vendor/GLFW/include"
 include_dir["Glad"] = "parrot/vendor/Glad/include"
+include_dir["imgui"] = "parrot/vendor/imgui"
 
 include "parrot/vendor/GLFW"
 include "parrot/vendor/Glad"
+include "parrot/vendor/imgui"
 
 
 -- Parrot Project Definition --
@@ -42,12 +44,14 @@ project "parrot"
         "%{prj.name}/src",
         "%{prj.name}/vendor/spdlog/include",
         "%{include_dir.GLFW}",
-        "%{include_dir.Glad}"
+        "%{include_dir.Glad}",
+        "%{include_dir.imgui}"
     }
 
     links {
         "GLFW",
         "Glad",
+        "imgui",
         "opengl32.lib"
     }
 

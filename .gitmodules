@@ -4,3 +4,6 @@
 [submodule "parrot/vendor/GLFW"]
 	path = parrot/vendor/GLFW
 	url = https://github.com/glfw/glfw
+[submodule "parrot/vendor/imgui"]
+	path = parrot/vendor/imgui
+	url = https://github.com/ocornut/imgui

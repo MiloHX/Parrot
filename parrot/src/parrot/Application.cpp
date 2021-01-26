@@ -7,7 +7,12 @@ namespace parrot {
 
     #define BIND_EVENT_FUNC(x) std::bind(&Application::x, this, std::placeholders::_1)
 
+    // Init Singleton
+    Application* Application::s_Instance = nullptr;
+
     Application::Application() {
+        PR_INT_ASSERT(!s_Instance, "Application already exist!")
+        s_Instance = this;
         m_window = std::unique_ptr<Window>(Window::create());
         m_window->setEventCallBack(BIND_EVENT_FUNC(onEvent));
     }
@@ -17,10 +22,12 @@ namespace parrot {
 
     void Application::pushLayer(Layer *layer) {
         m_layer_stack.pushLayer(layer);
+        layer->onAttach();
     }
 
     void Application::pushOverlay(Layer *overlay) {
         m_layer_stack.pushOverlay(overlay);
+        overlay->onAttach();
     }
 
     void Application::run() {
