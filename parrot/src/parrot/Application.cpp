@@ -5,8 +5,6 @@
 
 namespace parrot {
 
-    #define BIND_EVENT_FUNC(x) std::bind(&Application::x, this, std::placeholders::_1)
-
     // Init Singleton
     Application* Application::s_Instance = nullptr;
 
@@ -14,7 +12,7 @@ namespace parrot {
         PR_INT_ASSERT(!s_Instance, "Application already exist!")
         s_Instance = this;
         m_window = std::unique_ptr<Window>(Window::create());
-        m_window->setEventCallBack(BIND_EVENT_FUNC(onEvent));
+        m_window->setEventCallBack(PR_BIND_EVENT_FUNC(Application::onEvent));
     }
 
     Application::~Application() {
@@ -46,7 +44,7 @@ namespace parrot {
 
     void Application::onEvent(Event& e) {
         EventDispatcher dispatcher(e);
-        dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FUNC(onWindowClose));
+        dispatcher.dispatch<WindowCloseEvent>(PR_BIND_EVENT_FUNC(Application::onWindowClose));
 
         for (auto it = m_layer_stack.end(); it != m_layer_stack.begin();) {
             (*--it)->onEvent(e);

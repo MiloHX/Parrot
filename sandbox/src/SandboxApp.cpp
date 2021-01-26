@@ -5,7 +5,7 @@ public:
     ExmapleLayer() : Layer("Example") {}
 
     void onUpdate() override {
-        PR_INFO("Example Updating...");
+        // PR_INFO("Example Updating...");
     }
 
     void onEvent(parrot::Event& event) override {

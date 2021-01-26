@@ -9,7 +9,7 @@ namespace parrot {
     enum class EventType {
         None = 0,
         Window_Close, Window_Resize, Window_Focus, Window_Lost_Focus, Window_Moved,
-        Key_Pressed, Key_Released,
+        Key_Pressed, Key_Released, Key_Typed,
         Mouse_Button_Pressed, Mouse_Button_Released, Mouse_Moved, Mouse_Scrolled,
     };
 

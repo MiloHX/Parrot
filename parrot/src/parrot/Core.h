@@ -23,4 +23,9 @@
 #endif
 
 // Bit Operation
+
 #define BIT(x) (1 << x)
+
+// Event Function Binding
+
+#define PR_BIND_EVENT_FUNC(func) std::bind(&func, this, std::placeholders::_1)

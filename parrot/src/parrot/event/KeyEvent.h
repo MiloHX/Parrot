@@ -44,4 +44,19 @@ namespace parrot {
 
         EVENT_CLASS_TYPE(Key_Released)
     };
+
+    class PARROT_API KeyTypedEvent : public KeyEvent {
+    public:
+        KeyTypedEvent(int key_code) : KeyEvent(key_code) {}
+
+        std::string toString() const override {
+            std::stringstream ss;
+            ss << "KeyTypedEvent: " << m_key_code;
+            return ss.str();
+        }
+
+        EVENT_CLASS_TYPE(Key_Typed)
+    private:
+    };
+
 }
