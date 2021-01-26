@@ -18,9 +18,10 @@ namespace parrot {
         inline unsigned int getHeight() const override { return m_data.height; }
 
         // Window Attribute
-        inline void setEventCallBack(const EventCallBackFunc& callback) override { m_data.event_callback = callback; }
+        inline void  setEventCallBack(const EventCallBackFunc& callback) override { m_data.event_callback = callback; }
+        inline void* getNativeWindow() const override { return m_window;  }
         void setVSync(bool enabled) override;
-        bool isVSync() const override;
+        bool isVSync () const override;
 
     private:
         virtual void init(const WindowProps& props);

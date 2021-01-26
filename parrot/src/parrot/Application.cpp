@@ -1,16 +1,17 @@
 #include "prpch.h"
 #include "Application.h"
+#include "Input.h"
 
 #include <glad/glad.h>
 
 namespace parrot {
 
     // Init Singleton
-    Application* Application::s_Instance = nullptr;
+    Application* Application::s_instance = nullptr;
 
     Application::Application() {
-        PR_INT_ASSERT(!s_Instance, "Application already exist!")
-        s_Instance = this;
+        PR_INT_ASSERT(!s_instance, "Application already exist!")
+        s_instance = this;
         m_window = std::unique_ptr<Window>(Window::create());
         m_window->setEventCallBack(PR_BIND_EVENT_FUNC(Application::onEvent));
     }

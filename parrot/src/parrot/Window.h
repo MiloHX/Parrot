@@ -31,6 +31,7 @@ namespace parrot {
         virtual void         setEventCallBack(const EventCallBackFunc& callback) = 0;
         virtual void         setVSync        (bool enalbed)                      = 0;
         virtual bool         isVSync         () const                            = 0;
+        virtual void*        getNativeWindow () const                            = 0;
 
         static Window*       create(const WindowProps& props = WindowProps());
     };
