@@ -4,7 +4,7 @@
 #include "parrot/event/KeyEvent.h"
 #include "parrot/event/MouseEvent.h"
 
-#include <glad/glad.h>
+#include "platform/OpenGL/OpenGLContext.h"
 
 namespace parrot {
 
@@ -41,11 +41,9 @@ namespace parrot {
         }
 
         m_window = glfwCreateWindow((int)props.width, (int)props.height, m_data.title.c_str(), nullptr, nullptr);
-        glfwMakeContextCurrent(m_window);
-
-        // Glad
-        int glad_status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-        PR_INT_ASSERT(glad_status, "Initialize Glad failed")
+        
+        m_context = new OpenGLContext(m_window);
+        m_context->init();
 
         glfwSetWindowUserPointer(m_window, &m_data);
         setVSync(true);
@@ -130,7 +128,7 @@ namespace parrot {
 
     void WindowsWindow::onUpdate() {
         glfwPollEvents();
-        glfwSwapBuffers(m_window);
+        m_context->swapBuffers();
     }
 
     void WindowsWindow::setVSync(bool enabled) {

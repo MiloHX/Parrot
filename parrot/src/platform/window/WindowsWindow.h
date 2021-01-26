@@ -1,9 +1,9 @@
 #pragma once
 
 #include "parrot/Window.h"
+#include "parrot/renderer/GraphicsContext.h"
 
 #include <GLFW/glfw3.h>
-
 
 namespace parrot {
 
@@ -27,7 +27,8 @@ namespace parrot {
         virtual void init(const WindowProps& props);
         virtual void shutdown();
 
-        GLFWwindow* m_window;
+        GLFWwindow*      m_window;
+        GraphicsContext* m_context;
 
         struct WindowData {
             std::string       title;
