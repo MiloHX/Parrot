@@ -2,6 +2,7 @@ project "Glad"
     location "../Glad_prj"
     kind "StaticLib"
     language "C"
+    staticruntime "on"
 
     targetdir ("../Glad_prj/bin/" .. output_dir .. "/%{prj.name}")
     objdir ("../Glad_prj/bin-int/" .. output_dir .. "/%{prj.name}")
@@ -16,15 +17,10 @@ project "Glad"
     includedirs {
         "include"
     }
-    filter "system:linux"
-        pic "On"
-
-        systemversion "latest"
-        staticruntime "On"
 
     filter "system:windows"
         systemversion "latest"
-        staticruntime "On"
+
 
     filter "configurations:Debug"
         runtime "Debug"

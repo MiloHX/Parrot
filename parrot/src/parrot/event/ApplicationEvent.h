@@ -4,7 +4,7 @@
 
 namespace parrot {
 
-    class PARROT_API WindowResizedEvent : public Event {
+    class  WindowResizedEvent : public Event {
     public:
         WindowResizedEvent(unsigned int width, unsigned int height) : m_width(width), m_height(height) {}
 
@@ -25,7 +25,7 @@ namespace parrot {
     };
 
     
-    class PARROT_API WindowCloseEvent : public Event {
+    class  WindowCloseEvent : public Event {
     public:
         WindowCloseEvent() {}
 
@@ -34,7 +34,7 @@ namespace parrot {
     }; 
 
 
-    class PARROT_API WindowFocusEvent : public Event {
+    class  WindowFocusEvent : public Event {
     public:
         WindowFocusEvent() {}
 
@@ -43,7 +43,7 @@ namespace parrot {
     }; 
 
 
-    class PARROT_API WindowLostFocusEvent : public Event {
+    class  WindowLostFocusEvent : public Event {
     public:
         WindowLostFocusEvent() {}
 
@@ -52,7 +52,7 @@ namespace parrot {
     }; 
 
 
-    class PARROT_API WindowMovedEvent : public Event {
+    class  WindowMovedEvent : public Event {
     public:
         WindowMovedEvent() {}
 

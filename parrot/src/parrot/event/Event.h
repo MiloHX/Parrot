@@ -28,7 +28,7 @@ namespace parrot {
 
 #define EVENT_CLASS_CATEGORY(category) virtual int getCategoryFlag() const override { return category; }
 
-    class PARROT_API Event {
+    class Event {
         friend class EventDispatcher;
     public:
         // Must be implmeneted

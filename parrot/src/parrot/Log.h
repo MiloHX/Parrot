@@ -6,7 +6,7 @@
 #include <spdlog/fmt/ostr.h>
 
 namespace parrot {
-    class PARROT_API Log {
+    class Log {
     public:
         static void init();
         inline static std::shared_ptr<spdlog::logger>& getInternalLogger   () { return s_internal_logger   ; }

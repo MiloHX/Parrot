@@ -9,7 +9,7 @@
 
 namespace parrot {
 
-    class PARROT_API Application {
+    class Application {
     public:
         Application();
         virtual ~Application();

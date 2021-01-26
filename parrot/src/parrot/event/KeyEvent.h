@@ -4,7 +4,7 @@
 
 namespace parrot {
 
-    class PARROT_API KeyEvent : public Event {
+    class KeyEvent : public Event {
     public:
         inline int getKeyCode() const { return m_key_code; }
 
@@ -15,7 +15,7 @@ namespace parrot {
 
     };
 
-    class PARROT_API KeyPressedEvent : public KeyEvent {
+    class KeyPressedEvent : public KeyEvent {
     public:
         KeyPressedEvent(int key_code, int repeat_count) : KeyEvent(key_code), m_repeat_count(repeat_count) {}
 
@@ -32,7 +32,7 @@ namespace parrot {
         int m_repeat_count;
     };
 
-    class PARROT_API KeyReleasedEvent : public KeyEvent {
+    class KeyReleasedEvent : public KeyEvent {
     public:
         KeyReleasedEvent(int key_code) : KeyEvent(key_code) {}
 
@@ -45,7 +45,7 @@ namespace parrot {
         EVENT_CLASS_TYPE(Key_Released)
     };
 
-    class PARROT_API KeyTypedEvent : public KeyEvent {
+    class KeyTypedEvent : public KeyEvent {
     public:
         KeyTypedEvent(int key_code) : KeyEvent(key_code) {}
 

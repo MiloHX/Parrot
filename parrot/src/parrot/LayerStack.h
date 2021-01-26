@@ -5,7 +5,7 @@
 
 namespace parrot {
 
-    class PARROT_API LayerStack {
+    class LayerStack {
     public:
         LayerStack();
         ~LayerStack();

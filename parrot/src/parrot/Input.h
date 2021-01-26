@@ -4,7 +4,7 @@
 
 namespace parrot {
 
-    class PARROT_API Input {
+    class Input {
     public:
         inline static bool                    isKeyPressed        (int key_code) { return s_instance->isKeyPressedImpl        (key_code);  }
         inline static bool                    isMouseButtonPressed(int button  ) { return s_instance->isMouseButtonPressedImpl(button  );  }

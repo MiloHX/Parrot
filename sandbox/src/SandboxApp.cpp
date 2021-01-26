@@ -1,5 +1,7 @@
 #include <Parrot.h>
 
+#include <imgui.h>
+
 class ExmapleLayer : public parrot::Layer {
 public:
     ExmapleLayer() : Layer("Example") {}
@@ -8,6 +10,12 @@ public:
         if (parrot::Input::isKeyPressed(PR_KEY_A)) {
             PR_INFO("A is pressed (Poll)");
         }
+    }
+
+    void onImGuiRender() override {
+        ImGui::Begin("PARROT");
+        ImGui::Text("PARROT in the house");
+        ImGui::End();
     }
 
     void onEvent(parrot::Event& event) override {

@@ -18,7 +18,7 @@ namespace parrot {
     };
 
     // Platform independent Interface
-    class PARROT_API Window {
+    class Window {
     public:
         using EventCallBackFunc = std::function<void(Event&)>;
 

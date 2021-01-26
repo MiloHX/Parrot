@@ -31,9 +31,10 @@ group ""
 
 project "parrot"
     location "parrot"
-    kind "SharedLib"
+    kind "StaticLib"
     language "C++"
-    staticruntime "off"
+    cppdialect "C++17"
+    staticruntime "on"
 
     targetdir ("bin/" .. output_dir .. "/%{prj.name}")
     objdir ("bin-int/" .. output_dir .. "/%{prj.name}")
@@ -46,6 +47,10 @@ project "parrot"
         "%{prj.name}/src/**.cpp",
         "%{prj.name}/vendor/glm/glm/**.hpp",
         "%{prj.name}/vendor/glm/glm/**.inl"
+    }
+
+    defines {
+        "_CRT_SECURE_NO_WARNINGS"
     }
 
     includedirs {
@@ -65,33 +70,28 @@ project "parrot"
     }
 
     filter "system:windows"
-        cppdialect "C++17"
-        systemversion "latest"
 
+        systemversion "latest"
         defines {
             "PR_PLATFORM_WINDOWS",
             "PR_BUILD_DLL",
             "GLFW_INCLUDE_NONE"
         }
-    
-        postbuildcommands {
-            ("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. output_dir .. "/sandbox\"")
-        }
 
     filter "configurations:Debug"
         defines "PR_DEBUG"
         runtime "Debug"
-        symbols "On"
+        symbols "on"
 
     filter "configurations:Release"
         defines "PR_RELEASE"
         runtime "Release"
-        optimize "On"
+        optimize "on"
 
     filter "configurations:Dist"
         defines "PR_DIST"
         runtime "Release"
-        optimize "On"
+        optimize "on"
 
 
 -- Sandbox Project Definition --
@@ -100,7 +100,8 @@ project "sandbox"
     location "sandbox"
     kind "ConsoleApp"
     language "C++"
-    staticruntime "off"
+    cppdialect "C++17"
+    staticruntime "on"
 
     targetdir ("bin/" .. output_dir .. "/%{prj.name}")
     objdir ("bin-int/" .. output_dir .. "/%{prj.name}")
@@ -113,7 +114,8 @@ project "sandbox"
     includedirs {
         "parrot/vendor/spdlog/include",
         "parrot/src",
-        "%{include_dir.glm}"
+        "%{include_dir.glm}",
+        "%{include_dir.imgui}"
     }
 
     links {
@@ -121,9 +123,7 @@ project "sandbox"
     }
 
     filter "system:windows"
-        cppdialect "C++17"
         systemversion "latest"
-
         defines {
             "PR_PLATFORM_WINDOWS"
         }
@@ -131,16 +131,16 @@ project "sandbox"
     filter "configurations:Debug"
         defines "PR_DEBUG"
         runtime "Debug"
-        symbols "On"
+        symbols "on"
 
     filter "configurations:Release"
         defines "PR_RELEASE"
         runtime "Release"
-        optimize "On"
+        optimize "on"
 
     filter "configurations:Dist"
         defines "PR_DIST"
         runtime "Release"
-        optimize "On"
+        optimize "on"
 
 
