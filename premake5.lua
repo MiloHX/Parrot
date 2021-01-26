@@ -18,6 +18,7 @@ include_dir = {}
 include_dir["GLFW"] = "parrot/vendor/GLFW/include"
 include_dir["Glad"] = "parrot/vendor/Glad/include"
 include_dir["imgui"] = "parrot/vendor/imgui"
+include_dir["glm"] = "parrot/vendor/glm"
 
 group "Dependencies"
     include "parrot/vendor/GLFW"
@@ -42,7 +43,9 @@ project "parrot"
 
     files {
         "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp"
+        "%{prj.name}/src/**.cpp",
+        "%{prj.name}/vendor/glm/glm/**.hpp",
+        "%{prj.name}/vendor/glm/glm/**.inl"
     }
 
     includedirs {
@@ -50,7 +53,8 @@ project "parrot"
         "%{prj.name}/vendor/spdlog/include",
         "%{include_dir.GLFW}",
         "%{include_dir.Glad}",
-        "%{include_dir.imgui}"
+        "%{include_dir.imgui}",
+        "%{include_dir.glm}"
     }
 
     links {
@@ -108,7 +112,8 @@ project "sandbox"
 
     includedirs {
         "parrot/vendor/spdlog/include",
-        "parrot/src"
+        "parrot/src",
+        "%{include_dir.glm}"
     }
 
     links {

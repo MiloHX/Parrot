@@ -7,3 +7,6 @@
 [submodule "parrot/vendor/imgui"]
 	path = parrot/vendor/imgui
 	url = https://github.com/ocornut/imgui
+[submodule "parrot/vendor/glm"]
+	path = parrot/vendor/glm
+	url = https://github.com/Groovounet/glm
