@@ -14,6 +14,9 @@ namespace parrot {
         glfwMakeContextCurrent(m_window_handle);
         int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         PR_INT_ASSERT(status, "Glad Initialization Failed")
+
+        PR_INT_INFO("OpenGL Renderer: {0} - {1}", glGetString(GL_VENDOR), glGetString(GL_RENDERER));
+        PR_INT_INFO("OpenGL Version : {0}", glGetString(GL_VERSION));
     }
 
     void OpenGLContext::swapBuffers() {

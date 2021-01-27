@@ -26,12 +26,17 @@ namespace parrot {
     private:
         bool onWindowClose(Event& e);
 
+        static Application* s_instance;
+
         std::unique_ptr<Window> m_window;
         ImGuiLayer*             m_imgui_layer;
         bool                    m_running = true;
         LayerStack              m_layer_stack;
 
-        static Application* s_instance;
+        unsigned int m_vertex_array;
+        unsigned int m_vertex_buffer;
+        unsigned int m_index_buffer;
+
     };
 
     Application* createApplication();
