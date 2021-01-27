@@ -9,72 +9,46 @@ namespace parrot {
     // Init Singleton
     Application* Application::s_instance = nullptr;
 
-    // Temporary
-    static GLenum shaderDataTypeToOpenGLBaseType(ShaderDataType type) {
-        switch (type) {
-            case parrot::ShaderDataType::None  : return GL_FLOAT;
-            case parrot::ShaderDataType::Float : return GL_FLOAT;
-            case parrot::ShaderDataType::Float2: return GL_FLOAT;
-            case parrot::ShaderDataType::Float3: return GL_FLOAT;
-            case parrot::ShaderDataType::Float4: return GL_FLOAT;
-            case parrot::ShaderDataType::Mat3  : return GL_FLOAT;
-            case parrot::ShaderDataType::Mat4  : return GL_FLOAT;
-            case parrot::ShaderDataType::Int   : return GL_INT;
-            case parrot::ShaderDataType::Int2  : return GL_INT;
-            case parrot::ShaderDataType::Int3  : return GL_INT;
-            case parrot::ShaderDataType::Int4  : return GL_INT;
-            case parrot::ShaderDataType::Bool  : return GL_BOOL;
-        }
-    }
-
     Application::Application() {
         PR_INT_ASSERT(!s_instance, "Application already exist!")
         s_instance = this;
+
+        // Window Creation & Adding imgui layer
         m_window = std::unique_ptr<Window>(Window::create());
         m_window->setEventCallBack(PR_BIND_EVENT_FUNC(Application::onEvent));
         m_imgui_layer = new ImGuiLayer();
         pushOverlay(m_imgui_layer);
 
-        // Vertex Array
-        glGenVertexArrays(1, &m_vertex_array);
-        glBindVertexArray(m_vertex_array);
+        // Triangle Vertex Array
+        m_tr_vertex_array.reset(VertexArray::create());
 
-        // Vertex Buffer
+        // Triangle Vertex Data
         float vertices[3 * 7] = {
             -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
              0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
              0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f
         };
-        m_vertex_buffer.reset(VertexBuffer::create(vertices, sizeof(vertices)));
 
-        BufferLayout layout = {
+        // Triangle Vertex Buffer
+        std::shared_ptr<VertexBuffer> tr_vertex_buffer;
+        tr_vertex_buffer.reset(VertexBuffer::create(vertices, sizeof(vertices)));
+        tr_vertex_buffer->setLayout({
             { ShaderDataType::Float3, "a_position" },
             { ShaderDataType::Float4, "a_color"    }
-        };
+        });
+        m_tr_vertex_array->addVertexBuffer(tr_vertex_buffer);
 
-        m_vertex_buffer->setLayout(layout);
-
-        const auto& vertex_layout = m_vertex_buffer->getLayout();
-        uint32_t index = 0;
-        for (const auto& element : vertex_layout) {
-            glEnableVertexAttribArray(index);
-            glVertexAttribPointer(
-                index, 
-                element.getComponentCount(), 
-                shaderDataTypeToOpenGLBaseType(element.type), 
-                element.normalized ? GL_TRUE : GL_FALSE, 
-                vertex_layout.getStride(), 
-                (const void*)(element.offset)
-            );
-            ++index;
-        }
-
-        // Index Buffer
+        // Triangle Index Data
         uint32_t indices[3] = {
             0, 1, 2
         };
-        m_index_buffer.reset(IndexBuffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
 
+        // Triangle Index Buffer
+        std::shared_ptr<IndexBuffer> tr_index_buffer;
+        tr_index_buffer.reset(IndexBuffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
+        m_tr_vertex_array->setIndexBuffer(tr_index_buffer);
+
+        // Triangle Shaders
         std::string vertex_source = R"(
             #version 330 core
             layout(location = 0) in vec3 a_position;
@@ -101,8 +75,59 @@ namespace parrot {
             }
         )";           
 
-        m_shader.reset(new Shader(vertex_source, fragment_source));
+        m_tr_shader.reset(new Shader(vertex_source, fragment_source));
 
+        // Square Vertex Array
+        m_sq_vertex_array.reset(VertexArray::create());
+
+        // Square Vertex Data
+        float sq_vertices[3 * 4] = {
+            -0.75f, -0.75f, 0.0f,
+             0.75f, -0.75f, 0.0f,
+             0.75f,  0.75f, 0.0f,
+            -0.75f,  0.75f, 0.0f
+        };
+
+        // Square Vertex Buffer
+        std::shared_ptr<VertexBuffer> sq_vertex_buffer;
+        sq_vertex_buffer.reset(VertexBuffer::create(sq_vertices, sizeof(sq_vertices)));
+        sq_vertex_buffer->setLayout({
+            { ShaderDataType::Float3, "a_position" },
+        });
+        m_sq_vertex_array->addVertexBuffer(sq_vertex_buffer);
+
+        // Square Index Data
+        uint32_t sq_indices[6] = {
+            0, 1, 2, 2, 3, 0
+        };
+
+        // Triangle Index Buffer
+        std::shared_ptr<IndexBuffer> sq_index_buffer;
+        sq_index_buffer.reset(IndexBuffer::create(sq_indices, sizeof(sq_indices) / sizeof(uint32_t)));
+        m_sq_vertex_array->setIndexBuffer(sq_index_buffer);
+
+        // Square Shaders
+        std::string sq_vertex_source = R"(
+            #version 330 core
+            layout(location = 0) in vec3 a_position;
+
+            out vec3 v_position;
+
+            void main() {
+                v_position  = a_position;
+                gl_Position = vec4(a_position, 1.0);
+            }
+        )";
+
+        std::string sq_fragment_source = R"(
+            #version 330 core
+            layout(location = 0) out vec4 color;
+            in vec3 v_position;
+            void main() {
+                color = vec4(0.3, 0.3, 1.0, 1.0);
+            }
+        )";
+        m_sq_shader.reset(new Shader(sq_vertex_source, sq_fragment_source));
     }
 
     Application::~Application() {
@@ -124,9 +149,13 @@ namespace parrot {
             glClearColor(0.3f, 0.3f, 0.3f, 1);
             glClear(GL_COLOR_BUFFER_BIT);
             
-            m_shader->bind();
-            glBindVertexArray(m_vertex_array);
-            glDrawElements(GL_TRIANGLES, m_index_buffer->getCount(), GL_UNSIGNED_INT, nullptr);
+            m_sq_shader->bind();
+            m_sq_vertex_array->bind();
+            glDrawElements(GL_TRIANGLES, m_sq_vertex_array->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+
+            m_tr_shader->bind();
+            m_tr_vertex_array->bind();
+            glDrawElements(GL_TRIANGLES, m_tr_vertex_array->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 
             for (Layer* layer : m_layer_stack) {
                 layer->onUpdate();

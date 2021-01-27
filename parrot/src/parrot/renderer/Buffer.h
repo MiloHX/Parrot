@@ -1,4 +1,9 @@
 #pragma once
+#include "parrot/Core.h"
+
+#include <cstdint>
+#include <string>
+#include <vector>
 
 namespace parrot {
 
@@ -43,7 +48,7 @@ namespace parrot {
         uint32_t       offset;
         bool           normalized;
 
-        BufferElement() {} 
+        BufferElement() : type(ShaderDataType::None), name(), size(0), offset(0), normalized(false) {} 
 
         BufferElement(ShaderDataType type, const std::string& name, bool normalized = false)
             : type(type), name(name), size(getShaderDataTypeSize(type)), offset(0), normalized(normalized) {
@@ -71,11 +76,11 @@ namespace parrot {
 
     class BufferLayout {
     public:
-        BufferLayout() {}
-        BufferLayout(const std::initializer_list<BufferElement> elements) : m_elements(elements) {
+        BufferLayout() : m_element_list(), m_stride(0) {}
+        BufferLayout(const std::initializer_list<BufferElement> elements) : m_element_list(elements) {
             uint32_t offset = 0;
             m_stride = 0;
-            for (auto& element : m_elements) {
+            for (auto& element : m_element_list) {
                 element.offset = offset;
                 offset   += element.size;
                 m_stride += element.size;
@@ -83,15 +88,15 @@ namespace parrot {
         }
 
         inline uint32_t getStride() const { return m_stride; }
-        inline const std::vector<BufferElement>& getElements() const { return m_elements; }
+        inline const std::vector<BufferElement>& getElementList() const { return m_element_list; }
 
-        std::vector<BufferElement>::iterator       begin()       { return m_elements.begin(); }
-        std::vector<BufferElement>::iterator       end  ()       { return m_elements.end  (); }
-        std::vector<BufferElement>::const_iterator begin() const { return m_elements.begin(); }
-        std::vector<BufferElement>::const_iterator end  () const { return m_elements.end  (); }
+        std::vector<BufferElement>::iterator       begin()       { return m_element_list.begin(); }
+        std::vector<BufferElement>::iterator       end  ()       { return m_element_list.end  (); }
+        std::vector<BufferElement>::const_iterator begin() const { return m_element_list.begin(); }
+        std::vector<BufferElement>::const_iterator end  () const { return m_element_list.end  (); }
 
     private:
-        std::vector<BufferElement> m_elements;
+        std::vector<BufferElement> m_element_list;
         uint32_t                   m_stride = 0;
     };
 

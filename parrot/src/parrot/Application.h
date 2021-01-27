@@ -8,6 +8,7 @@
 #include "imgui/ImGuiLayer.h"
 #include "renderer/Shader.h"
 #include "renderer/Buffer.h"
+#include "renderer/VertexArray.h"
 
 namespace parrot {
 
@@ -35,10 +36,11 @@ namespace parrot {
         bool                    m_running = true;
         LayerStack              m_layer_stack;
 
-        unsigned int m_vertex_array;
-        std::unique_ptr<VertexBuffer> m_vertex_buffer;
-        std::unique_ptr<IndexBuffer > m_index_buffer ;
-        std::unique_ptr<Shader      > m_shader;
+        std::shared_ptr<VertexArray > m_tr_vertex_array;
+        std::shared_ptr<Shader      > m_tr_shader;
+        std::shared_ptr<Shader      > m_sq_shader;
+
+        std::shared_ptr<VertexArray > m_sq_vertex_array;
 
     };
 
