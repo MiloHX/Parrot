@@ -1,8 +1,7 @@
 #include "prpch.h"
 #include "Application.h"
 #include "Input.h"
-
-#include <glad/glad.h>
+#include "parrot/renderer/Renderer.h"
 
 namespace parrot {
 
@@ -146,16 +145,23 @@ namespace parrot {
     void Application::run() {
 
         while (m_running) {
-            glClearColor(0.3f, 0.3f, 0.3f, 1);
-            glClear(GL_COLOR_BUFFER_BIT);
+            RenderCommand::setClearColor({ 0.3f, 0.3f, 0.3f, 1 });
+            RenderCommand::clear();
             
+            Renderer::beginScene();
+
             m_sq_shader->bind();
-            m_sq_vertex_array->bind();
-            glDrawElements(GL_TRIANGLES, m_sq_vertex_array->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+            Renderer::submit(m_sq_vertex_array);
+            //m_sq_vertex_array->bind();
+            //glDrawElements(GL_TRIANGLES, m_sq_vertex_array->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 
             m_tr_shader->bind();
-            m_tr_vertex_array->bind();
-            glDrawElements(GL_TRIANGLES, m_tr_vertex_array->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+            //m_tr_vertex_array->bind();
+            //glDrawElements(GL_TRIANGLES, m_tr_vertex_array->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+            Renderer::submit(m_tr_vertex_array);
+
+            Renderer::endScene();
+
 
             for (Layer* layer : m_layer_stack) {
                 layer->onUpdate();
