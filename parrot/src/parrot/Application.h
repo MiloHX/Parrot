@@ -7,6 +7,7 @@
 #include "event/ApplicationEvent.h"
 #include "imgui/ImGuiLayer.h"
 #include "renderer/Shader.h"
+#include "renderer/Buffer.h"
 
 namespace parrot {
 
@@ -35,9 +36,9 @@ namespace parrot {
         LayerStack              m_layer_stack;
 
         unsigned int m_vertex_array;
-        unsigned int m_vertex_buffer;
-        unsigned int m_index_buffer;
-        std::unique_ptr<Shader> m_shader;
+        std::unique_ptr<VertexBuffer> m_vertex_buffer;
+        std::unique_ptr<IndexBuffer > m_index_buffer ;
+        std::unique_ptr<Shader      > m_shader;
 
     };
 
