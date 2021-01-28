@@ -6,11 +6,6 @@
 #include "event/Event.h"
 #include "event/ApplicationEvent.h"
 #include "imgui/ImGuiLayer.h"
-#include "renderer/Shader.h"
-#include "renderer/Buffer.h"
-#include "renderer/VertexArray.h"
-#include "renderer/OrthographicCamera.h"
-
 
 namespace parrot {
 
@@ -37,14 +32,6 @@ namespace parrot {
         ImGuiLayer*             m_imgui_layer;
         bool                    m_running = true;
         LayerStack              m_layer_stack;
-
-        std::shared_ptr<VertexArray > m_tr_vertex_array;
-        std::shared_ptr<VertexArray > m_sq_vertex_array;
-        std::shared_ptr<Shader      > m_tr_shader;
-        std::shared_ptr<Shader      > m_sq_shader;
-
-        OrthographicCamera            m_camera;
-
     };
 
     Application* createApplication();
