@@ -122,9 +122,12 @@ public:
         std::string sq_fragment_source = R"(
             #version 330 core
             layout(location = 0) out vec4 color;
+
+            uniform vec4 u_color;
+
             in vec3 v_position;
             void main() {
-                color = vec4(0.3, 0.3, 1.0, 1.0);
+                color = u_color;
             }
         )";
         m_sq_shader.reset(new parrot::Shader(sq_vertex_source, sq_fragment_source));
@@ -172,12 +175,20 @@ public:
         parrot::Renderer::beginScene(m_camera);
 
         //glm::mat4 sq_transform = glm::translate(glm::mat4(1.0f), m_sq_position);
-        glm::mat4 sq_scale     = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+        glm::mat4 sq_scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+
+        glm::vec4 red_color (1.0f, 0.3f, 0.3f, 1.0f);
+        glm::vec4 blue_color(0.3f, 0.3f, 1.0f, 1.0f);
 
         for (int i = 0; i < 20; ++i) {
             for (int j = 0; j < 20; ++j) {
                 glm::vec3 pos(j * 0.11f - 1.1f, i * 0.11f - 1.1f, 0.0f);
                 glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos + m_sq_position) * sq_scale;
+                if (i % 2 == 0) {
+                    m_sq_shader->uploadUniformFloat4("u_color", red_color);
+                } else {
+                    m_sq_shader->uploadUniformFloat4("u_color", blue_color);
+                }
                 parrot::Renderer::submit(m_sq_shader, m_sq_vertex_array, transform);
             }
         }
