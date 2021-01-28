@@ -80,18 +80,19 @@ public:
         m_sq_vertex_array.reset(parrot::VertexArray::create());
 
         // Square Vertex Data
-        float sq_vertices[3 * 4] = {
-            -0.5f, -0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-             0.5f,  0.5f, 0.0f,
-            -0.5f,  0.5f, 0.0f
+        float sq_vertices[5 * 4] = {
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+             0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+             0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+            -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
         };
 
         // Square Vertex Buffer
         parrot::Ref<parrot::VertexBuffer> sq_vertex_buffer;
         sq_vertex_buffer.reset(parrot::VertexBuffer::create(sq_vertices, sizeof(sq_vertices)));
         sq_vertex_buffer->setLayout({
-            { parrot::ShaderDataType::Float3, "a_position" },
+            { parrot::ShaderDataType::Float3, "a_position"   },
+            { parrot::ShaderDataType::Float2, "a_text_coord" },
         });
         m_sq_vertex_array->addVertexBuffer(sq_vertex_buffer);
 
@@ -133,6 +134,42 @@ public:
             }
         )";
         m_sq_shader.reset(parrot::Shader::create(sq_vertex_source, sq_fragment_source));
+
+        // Texture Shaders
+        std::string tx_vertex_source = R"(
+            #version 330 core
+            layout(location = 0) in vec3 a_position;
+            layout(location = 1) in vec2 a_tex_coord;
+    
+            uniform mat4 u_view_projection;
+            uniform mat4 u_transform;
+
+            out vec2 v_tex_coord;
+
+            void main() {
+                v_tex_coord  = a_tex_coord;
+                gl_Position = u_view_projection * u_transform * vec4(a_position, 1.0);
+            }
+        )";
+
+        std::string tx_fragment_source = R"(
+            #version 330 core
+            layout(location = 0) out vec4 color;
+
+            uniform sampler2D u_texture;
+
+            in vec2 v_tex_coord;
+
+            void main() {
+                color = texture(u_texture, v_tex_coord);
+            }
+        )";
+        m_tx_shader.reset(parrot::Shader::create(tx_vertex_source, tx_fragment_source));
+
+        m_texture = parrot::Texture2D::create("asset/texture/Checkerboard.png");
+
+        std::dynamic_pointer_cast<parrot::OpenGLShader>(m_tx_shader)->bind();
+        std::dynamic_pointer_cast<parrot::OpenGLShader>(m_tx_shader)->uploadUniformInt("u_texture", 0);
     }
 
     void onUpdate(parrot::TimeStep time_step) override {
@@ -176,8 +213,7 @@ public:
 
         parrot::Renderer::beginScene(m_camera);
 
-        //glm::mat4 sq_transform = glm::translate(glm::mat4(1.0f), m_sq_position);
-        glm::mat4 sq_scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+        //glm::mat4 sq_scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
         glm::vec4 red_color (1.0f, 0.3f, 0.3f, 1.0f);
         glm::vec4 blue_color(0.3f, 0.3f, 1.0f, 1.0f);
@@ -185,15 +221,20 @@ public:
         std::dynamic_pointer_cast<parrot::OpenGLShader>(m_sq_shader)->bind();
         std::dynamic_pointer_cast<parrot::OpenGLShader>(m_sq_shader)->uploadUniformFloat3("u_color", m_sq_color);
 
-        for (int i = 0; i < 20; ++i) {
-            for (int j = 0; j < 20; ++j) {
-                glm::vec3 pos(j * 0.11f - 1.1f, i * 0.11f - 1.1f, 0.0f);
-                glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos + m_sq_position) * sq_scale;
-                parrot::Renderer::submit(m_sq_shader, m_sq_vertex_array, transform);
-            }
-        }
+        //for (int i = 0; i < 20; ++i) {
+        //    for (int j = 0; j < 20; ++j) {
+        //        glm::vec3 pos(j * 0.11f - 1.1f, i * 0.11f - 1.1f, 0.0f);
+        //        glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos + m_sq_position) * sq_scale;
+        //        parrot::Renderer::submit(m_sq_shader, m_sq_vertex_array, transform);
+        //    }
+        //}
 
-        parrot::Renderer::submit(m_tr_shader, m_tr_vertex_array);
+        m_texture->bind();
+
+        glm::mat4 sq_scale = glm::scale(glm::mat4(1.0f), glm::vec3(1.5f));
+        parrot::Renderer::submit(m_tx_shader, m_sq_vertex_array, glm::translate(glm::mat4(1.0f), m_sq_position) * sq_scale);
+
+        //parrot::Renderer::submit(m_tr_shader, m_tr_vertex_array);
         parrot::Renderer::endScene();
 
     }
@@ -219,6 +260,8 @@ private:
     parrot::Ref<parrot::VertexArray> m_sq_vertex_array;
     parrot::Ref<parrot::Shader     > m_tr_shader;
     parrot::Ref<parrot::Shader     > m_sq_shader;
+    parrot::Ref<parrot::Shader     > m_tx_shader;
+    parrot::Ref<parrot::Texture2D  > m_texture;
     parrot::OrthographicCamera           m_camera;
     glm::vec3                            m_camera_position;
     float                                m_camera_move_speed = 1.0f;

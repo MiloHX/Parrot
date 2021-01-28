@@ -19,6 +19,7 @@ include_dir["GLFW"] = "parrot/vendor/GLFW/include"
 include_dir["Glad"] = "parrot/vendor/Glad/include"
 include_dir["imgui"] = "parrot/vendor/imgui"
 include_dir["glm"] = "parrot/vendor/glm"
+include_dir["stb_image"] = "parrot/vendor/stb_image"
 
 group "Dependencies"
     include "parrot/vendor/GLFW"
@@ -46,7 +47,9 @@ project "parrot"
         "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.cpp",
         "%{prj.name}/vendor/glm/glm/**.hpp",
-        "%{prj.name}/vendor/glm/glm/**.inl"
+        "%{prj.name}/vendor/glm/glm/**.inl",
+        "%{prj.name}/vendor/stb_image/**.h",
+        "%{prj.name}/vendor/stb_image/**.cpp"
     }
 
     defines {
@@ -59,7 +62,8 @@ project "parrot"
         "%{include_dir.GLFW}",
         "%{include_dir.Glad}",
         "%{include_dir.imgui}",
-        "%{include_dir.glm}"
+        "%{include_dir.glm}",
+        "%{include_dir.stb_image}",
     }
 
     links {

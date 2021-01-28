@@ -17,6 +17,7 @@
 #include "parrot/renderer/VertexArray.h"
 #include "parrot/renderer/Shader.h"
 #include "parrot/renderer/Buffer.h"
+#include "parrot/renderer/Texture.h"
 #include "parrot/renderer/OrthographicCamera.h"
 
 //---------- Entry Point -----------
