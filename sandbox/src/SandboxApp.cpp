@@ -26,7 +26,7 @@ public:
         };
 
         // Triangle Vertex Buffer
-        std::shared_ptr<parrot::VertexBuffer> tr_vertex_buffer;
+        parrot::Ref<parrot::VertexBuffer> tr_vertex_buffer;
         tr_vertex_buffer.reset(parrot::VertexBuffer::create(vertices, sizeof(vertices)));
         tr_vertex_buffer->setLayout({
             { parrot::ShaderDataType::Float3, "a_position" },
@@ -40,7 +40,7 @@ public:
         };
 
         // Triangle Index Buffer
-        std::shared_ptr<parrot::IndexBuffer> tr_index_buffer;
+        parrot::Ref<parrot::IndexBuffer> tr_index_buffer;
         tr_index_buffer.reset(parrot::IndexBuffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
         m_tr_vertex_array->setIndexBuffer(tr_index_buffer);
 
@@ -88,7 +88,7 @@ public:
         };
 
         // Square Vertex Buffer
-        std::shared_ptr<parrot::VertexBuffer> sq_vertex_buffer;
+        parrot::Ref<parrot::VertexBuffer> sq_vertex_buffer;
         sq_vertex_buffer.reset(parrot::VertexBuffer::create(sq_vertices, sizeof(sq_vertices)));
         sq_vertex_buffer->setLayout({
             { parrot::ShaderDataType::Float3, "a_position" },
@@ -101,7 +101,7 @@ public:
         };
 
         // Triangle Index Buffer
-        std::shared_ptr<parrot::IndexBuffer> sq_index_buffer;
+        parrot::Ref<parrot::IndexBuffer> sq_index_buffer;
         sq_index_buffer.reset(parrot::IndexBuffer::create(sq_indices, sizeof(sq_indices) / sizeof(uint32_t)));
         m_sq_vertex_array->setIndexBuffer(sq_index_buffer);
 
@@ -215,10 +215,10 @@ public:
 
 private:
 
-    std::shared_ptr<parrot::VertexArray> m_tr_vertex_array;
-    std::shared_ptr<parrot::VertexArray> m_sq_vertex_array;
-    std::shared_ptr<parrot::Shader     > m_tr_shader;
-    std::shared_ptr<parrot::Shader     > m_sq_shader;
+    parrot::Ref<parrot::VertexArray> m_tr_vertex_array;
+    parrot::Ref<parrot::VertexArray> m_sq_vertex_array;
+    parrot::Ref<parrot::Shader     > m_tr_shader;
+    parrot::Ref<parrot::Shader     > m_sq_shader;
     parrot::OrthographicCamera           m_camera;
     glm::vec3                            m_camera_position;
     float                                m_camera_move_speed = 1.0f;

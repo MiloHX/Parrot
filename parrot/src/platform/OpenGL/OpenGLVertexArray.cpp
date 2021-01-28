@@ -41,7 +41,7 @@ namespace parrot {
         glBindVertexArray(0);
     }
 
-    void OpenGLVertexArray::addVertexBuffer(const std::shared_ptr<VertexBuffer>& vertex_buffer) {
+    void OpenGLVertexArray::addVertexBuffer(const Ref<VertexBuffer>& vertex_buffer) {
         PR_CORE_ASSERT(vertex_buffer->getLayout().getElementList().size(), "Vertex buffer has no layout")
 
         glBindVertexArray(m_renderer_id);
@@ -64,7 +64,7 @@ namespace parrot {
         m_vertex_buffer_list.push_back(vertex_buffer);
     }
 
-    void OpenGLVertexArray::setIndexBuffer(const std::shared_ptr<IndexBuffer>& index_buffer) {
+    void OpenGLVertexArray::setIndexBuffer(const Ref<IndexBuffer>& index_buffer) {
         glBindVertexArray(m_renderer_id);
         index_buffer->bind();
 

@@ -15,7 +15,7 @@ namespace parrot {
         s_instance = this;
 
         // Window Creation & Adding imgui layer
-        m_window = std::unique_ptr<Window>(Window::create());
+        m_window = Ref<Window>(Window::create());
         m_window->setEventCallBack(PR_BIND_EVENT_FUNC(Application::onEvent));
         m_imgui_layer = new ImGuiLayer();
         pushOverlay(m_imgui_layer);

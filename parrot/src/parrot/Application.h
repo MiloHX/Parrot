@@ -29,13 +29,13 @@ namespace parrot {
 
         static Application* s_instance;
 
-        TimeStep                m_time_step;
-        float                   m_last_frame_time;
+        TimeStep    m_time_step;
+        float       m_last_frame_time;
 
-        std::unique_ptr<Window> m_window;
-        ImGuiLayer*             m_imgui_layer;
-        bool                    m_running = true;
-        LayerStack              m_layer_stack;
+        Ref<Window> m_window;
+        ImGuiLayer* m_imgui_layer;
+        bool        m_running = true;
+        LayerStack  m_layer_stack;
     };
 
     Application* createApplication();

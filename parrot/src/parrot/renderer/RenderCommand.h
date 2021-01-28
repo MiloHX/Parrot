@@ -12,7 +12,7 @@ namespace parrot {
         inline static void clear() {
             s_renderer_API->clear();
         }
-        inline static void drawIndexed(const std::shared_ptr<VertexArray>& vertex_array) {
+        inline static void drawIndexed(const Ref<VertexArray>& vertex_array) {
             s_renderer_API->drawIndexed(vertex_array);
         }
     private:
