@@ -2,6 +2,7 @@
 
 #include "Core.h"
 #include "event/Event.h"
+#include "core/TimeStep.h"
 
 #include <string>
 
@@ -14,7 +15,7 @@ namespace parrot {
 
         virtual void onAttach     () {}
         virtual void onDetach     () {}
-        virtual void onUpdate     () {}
+        virtual void onUpdate     (TimeStep time_step) {}
         virtual void onImGuiRender() {}
         virtual void onEvent      (Event& event) {}
 

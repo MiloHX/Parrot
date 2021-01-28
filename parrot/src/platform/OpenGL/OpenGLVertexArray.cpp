@@ -42,7 +42,7 @@ namespace parrot {
     }
 
     void OpenGLVertexArray::addVertexBuffer(const std::shared_ptr<VertexBuffer>& vertex_buffer) {
-        PR_INT_ASSERT(vertex_buffer->getLayout().getElementList().size(), "Vertex buffer has no layout")
+        PR_CORE_ASSERT(vertex_buffer->getLayout().getElementList().size(), "Vertex buffer has no layout")
 
         glBindVertexArray(m_renderer_id);
         vertex_buffer->bind();

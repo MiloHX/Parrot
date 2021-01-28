@@ -121,23 +121,24 @@ public:
         m_sq_shader.reset(new parrot::Shader(sq_vertex_source, sq_fragment_source));
     }
 
-    void onUpdate() override {
+    void onUpdate(parrot::TimeStep time_step) override {
+
         if (parrot::Input::isKeyPressed(PR_KEY_A)) {
-            m_camera_position.x -= m_camera_move_speed;
+            m_camera_position.x -= m_camera_move_speed * time_step;
         }else if (parrot::Input::isKeyPressed(PR_KEY_D)) {
-            m_camera_position.x += m_camera_move_speed;
+            m_camera_position.x += m_camera_move_speed * time_step;
         }
 
         if (parrot::Input::isKeyPressed(PR_KEY_W)) {
-            m_camera_position.y += m_camera_move_speed;
+            m_camera_position.y += m_camera_move_speed * time_step;
         } else if (parrot::Input::isKeyPressed(PR_KEY_S)) {
-            m_camera_position.y -= m_camera_move_speed;
+            m_camera_position.y -= m_camera_move_speed * time_step;
         }
 
         if (parrot::Input::isKeyPressed(PR_KEY_LEFT)) {
-            m_camera_rotation += m_camera_rotation_speed;
+            m_camera_rotation += m_camera_rotation_speed * time_step;
         } else if (parrot::Input::isKeyPressed(PR_KEY_RIGHT)) {
-            m_camera_rotation -= m_camera_rotation_speed;
+            m_camera_rotation -= m_camera_rotation_speed * time_step;
         }
 
         parrot::RenderCommand::setClearColor(glm::vec4{ 0.3f, 0.3f, 0.3f, 1.0f });
@@ -173,9 +174,9 @@ private:
     std::shared_ptr<parrot::Shader     > m_sq_shader;
     parrot::OrthographicCamera           m_camera;
     glm::vec3                            m_camera_position;
-    float                                m_camera_move_speed = 0.03f;
+    float                                m_camera_move_speed = 1.0f;
     float                                m_camera_rotation;
-    float                                m_camera_rotation_speed = 0.5f;
+    float                                m_camera_rotation_speed = 20.0f;
 };
 
 class Sandbox : public parrot::Application {

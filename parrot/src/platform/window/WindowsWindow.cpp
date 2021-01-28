@@ -11,7 +11,7 @@ namespace parrot {
     static bool s_is_GLFW_initialized = false;
 
     static void GLFWErrorCallback(int error, const char* description) {
-        PR_INT_ERROR("GLFW Error ({0}): {1}", error, description);
+        PR_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
     }
 
     Window* Window::create(const WindowProps& props) {
@@ -31,11 +31,11 @@ namespace parrot {
         m_data.width  = props.width;
         m_data.height = props.height;
 
-        PR_INT_INFO("Creating window {0} ({1}, {2})", props.title, props.width, props.height);
+        PR_CORE_INFO("Creating window {0} ({1}, {2})", props.title, props.width, props.height);
 
         if (!s_is_GLFW_initialized) {
             int success = glfwInit();
-            PR_INT_ASSERT(success, "Cound not initialize GLFW! ");
+            PR_CORE_ASSERT(success, "Cound not initialize GLFW! ");
             glfwSetErrorCallback(GLFWErrorCallback);
             s_is_GLFW_initialized = true;
         }

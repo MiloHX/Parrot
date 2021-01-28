@@ -9,13 +9,13 @@ namespace parrot {
     VertexArray* VertexArray::create() {
         switch (Renderer::getAPI()) {
             case RendererAPI::API::None:
-                PR_INT_ASSERT(false, "RendererAPI::None is not supported");
+                PR_CORE_ASSERT(false, "RendererAPI::None is not supported");
                 return nullptr;
             case RendererAPI::API::OpenGL:
                 return new OpenGLVertexArray();
         }
 
-        PR_INT_ASSERT(false, "Unknown RendererAPI when creating vertex buffer");
+        PR_CORE_ASSERT(false, "Unknown RendererAPI when creating vertex buffer");
         return nullptr;
     }
 

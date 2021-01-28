@@ -3,13 +3,15 @@
 #include "Input.h"
 #include "parrot/renderer/Renderer.h"
 
+#include "GLFW/glfw3.h"
+
 namespace parrot {
 
     // Init Singleton
     Application* Application::s_instance = nullptr;
 
     Application::Application() {
-        PR_INT_ASSERT(!s_instance, "Application already exist!")
+        PR_CORE_ASSERT(!s_instance, "Application already exist!")
         s_instance = this;
 
         // Window Creation & Adding imgui layer
@@ -35,9 +37,12 @@ namespace parrot {
     void Application::run() {
 
         while (m_running) {
+            float time = static_cast<float>(glfwGetTime());  // Should be platform specific
+            m_time_step       = time - m_last_frame_time;
+            m_last_frame_time = time;
 
             for (Layer* layer : m_layer_stack) {
-                layer->onUpdate();
+                layer->onUpdate(m_time_step);
             }
 
             m_imgui_layer->begin();

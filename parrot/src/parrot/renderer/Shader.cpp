@@ -22,8 +22,8 @@ namespace parrot {
             glGetShaderInfoLog(vertex_shader, max_length, &max_length, &info_log_list[0]);
             glDeleteShader(vertex_shader);
 
-            PR_INT_ERROR("{0}", info_log_list.data());
-            PR_INT_ASSERT(false, "Vertex shader compilation error");
+            PR_CORE_ERROR("{0}", info_log_list.data());
+            PR_CORE_ASSERT(false, "Vertex shader compilation error");
 
             return;
         }
@@ -44,8 +44,8 @@ namespace parrot {
             glDeleteShader(vertex_shader  );
             glDeleteShader(fragment_shader);
 
-            PR_INT_ERROR("{0}", info_log_list.data());
-            PR_INT_ASSERT(false, "Fragment shader compilation error");
+            PR_CORE_ERROR("{0}", info_log_list.data());
+            PR_CORE_ASSERT(false, "Fragment shader compilation error");
 
             return;
         }
@@ -69,8 +69,8 @@ namespace parrot {
             glDeleteShader (fragment_shader);
             glDeleteProgram(program        );
 
-            PR_INT_ERROR("{0}", info_log_list.data());
-            PR_INT_ASSERT(false, "Shader program link error");
+            PR_CORE_ERROR("{0}", info_log_list.data());
+            PR_CORE_ASSERT(false, "Shader program link error");
 
             return;
         }

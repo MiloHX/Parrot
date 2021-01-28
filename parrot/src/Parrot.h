@@ -3,6 +3,7 @@
 //---------- Application -----------
 
 #include "parrot/Application.h"
+#include "parrot/core/TimeStep.h"
 #include "parrot/Log.h"
 #include "parrot/Layer.h"
 #include "parrot/input.h"

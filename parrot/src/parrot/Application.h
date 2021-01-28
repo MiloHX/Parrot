@@ -6,6 +6,7 @@
 #include "event/Event.h"
 #include "event/ApplicationEvent.h"
 #include "imgui/ImGuiLayer.h"
+#include "parrot/core/TimeStep.h"
 
 namespace parrot {
 
@@ -27,6 +28,9 @@ namespace parrot {
         bool onWindowClose(Event& e);
 
         static Application* s_instance;
+
+        TimeStep                m_time_step;
+        float                   m_last_frame_time;
 
         std::unique_ptr<Window> m_window;
         ImGuiLayer*             m_imgui_layer;

@@ -37,7 +37,7 @@ namespace parrot {
             case ShaderDataType::Bool  : return 1;
         }
 
-        PR_INT_ASSERT(false, "Unknown ShaderDataType");
+        PR_CORE_ASSERT(false, "Unknown ShaderDataType");
         return 0;
     }
 
@@ -69,7 +69,7 @@ namespace parrot {
                 case ShaderDataType::Bool  : return 1;
             }
 
-            PR_INT_ASSERT(false, "Unknown ShaderDataType");
+            PR_CORE_ASSERT(false, "Unknown ShaderDataType");
             return 0;
         }
     };
