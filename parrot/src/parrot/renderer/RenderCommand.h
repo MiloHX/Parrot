@@ -6,6 +6,10 @@ namespace parrot {
 
     class RenderCommand {
     public:
+        inline static void init() {
+            s_renderer_API->init();
+        }
+
         inline static void setClearColor(const glm::vec4& color) {
             s_renderer_API->setClearColor(color);
         }

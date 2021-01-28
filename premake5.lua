@@ -15,10 +15,10 @@ output_dir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder
 include_dir = {}
-include_dir["GLFW"] = "parrot/vendor/GLFW/include"
-include_dir["Glad"] = "parrot/vendor/Glad/include"
-include_dir["imgui"] = "parrot/vendor/imgui"
-include_dir["glm"] = "parrot/vendor/glm"
+include_dir["GLFW"]      = "parrot/vendor/GLFW/include"
+include_dir["Glad"]      = "parrot/vendor/Glad/include"
+include_dir["imgui"]     = "parrot/vendor/imgui"
+include_dir["glm"]       = "parrot/vendor/glm"
 include_dir["stb_image"] = "parrot/vendor/stb_image"
 
 group "Dependencies"
@@ -112,7 +112,8 @@ project "sandbox"
 
     files {
         "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp"
+        "%{prj.name}/src/**.cpp",
+        "%{prj.name}/asset/**.*"
     }
 
     includedirs {

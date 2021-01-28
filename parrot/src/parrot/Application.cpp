@@ -17,6 +17,9 @@ namespace parrot {
         // Window Creation & Adding imgui layer
         m_window = Ref<Window>(Window::create());
         m_window->setEventCallBack(PR_BIND_EVENT_FUNC(Application::onEvent));
+
+        Renderer::init();
+
         m_imgui_layer = new ImGuiLayer();
         pushOverlay(m_imgui_layer);
     }

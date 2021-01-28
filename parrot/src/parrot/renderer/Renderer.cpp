@@ -7,6 +7,10 @@ namespace parrot {
 
     Renderer::SceneData* Renderer::m_scene_data = new Renderer::SceneData();
 
+    void Renderer::init() {
+        RenderCommand::init();
+    }
+
     void Renderer::beginScene(OrthographicCamera& camera) {
         m_scene_data->view_projection_matrix = camera.getViewPorjectionMatrix();
     }

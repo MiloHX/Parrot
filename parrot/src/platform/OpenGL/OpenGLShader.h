@@ -5,10 +5,15 @@
 #include <string>
 #include <glm/glm.hpp>
 
+
+// TOBE REMOVE
+typedef unsigned int GLenum;
+
 namespace parrot {
 
     class OpenGLShader : public Shader {
     public:
+        OpenGLShader(const std::string& file_path);
         OpenGLShader(const std::string& vertex_source, const std::string& fragment_source);
         virtual ~OpenGLShader();
 
@@ -24,6 +29,10 @@ namespace parrot {
         void uploadUniformMat3  (const std::string& name, const glm::mat3& matrix);
         void uploadUniformMat4  (const std::string& name, const glm::mat4& matrix);
     private:
+        std::string                             readFile(const std::string& file_path);
+        std::unordered_map<GLenum, std::string> preprocess(const std::string& shader_source);
+        void                                    compile(const std::unordered_map<GLenum, std::string>& processed_shader_source);
+
         uint32_t m_renderer_id = 0;
     };
 
