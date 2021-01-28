@@ -9,6 +9,8 @@
 #include "renderer/Shader.h"
 #include "renderer/Buffer.h"
 #include "renderer/VertexArray.h"
+#include "renderer/OrthographicCamera.h"
+
 
 namespace parrot {
 
@@ -37,10 +39,11 @@ namespace parrot {
         LayerStack              m_layer_stack;
 
         std::shared_ptr<VertexArray > m_tr_vertex_array;
+        std::shared_ptr<VertexArray > m_sq_vertex_array;
         std::shared_ptr<Shader      > m_tr_shader;
         std::shared_ptr<Shader      > m_sq_shader;
 
-        std::shared_ptr<VertexArray > m_sq_vertex_array;
+        OrthographicCamera            m_camera;
 
     };
 

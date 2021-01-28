@@ -8,7 +8,7 @@ namespace parrot {
     // Init Singleton
     Application* Application::s_instance = nullptr;
 
-    Application::Application() {
+    Application::Application() : m_camera(-1.6f, 1.6f, -0.9, 0.9f) {
         PR_INT_ASSERT(!s_instance, "Application already exist!")
         s_instance = this;
 
@@ -53,13 +53,15 @@ namespace parrot {
             layout(location = 0) in vec3 a_position;
             layout(location = 1) in vec4 a_color;
 
+            uniform mat4 u_view_projection;
+        
             out vec3 v_position;
             out vec4 v_color;
 
             void main() {
                 v_position  = a_position;
                 v_color     = a_color;
-                gl_Position = vec4(a_position, 1.0);
+                gl_Position = u_view_projection * vec4(a_position, 1.0);
             }
         )";
 
@@ -109,12 +111,14 @@ namespace parrot {
         std::string sq_vertex_source = R"(
             #version 330 core
             layout(location = 0) in vec3 a_position;
+    
+            uniform mat4 u_view_projection;
 
             out vec3 v_position;
 
             void main() {
                 v_position  = a_position;
-                gl_Position = vec4(a_position, 1.0);
+                gl_Position = u_view_projection * vec4(a_position, 1.0);
             }
         )";
 
@@ -145,23 +149,16 @@ namespace parrot {
     void Application::run() {
 
         while (m_running) {
-            RenderCommand::setClearColor({ 0.3f, 0.3f, 0.3f, 1 });
+            RenderCommand::setClearColor(glm::vec4{ 0.3f, 0.3f, 0.3f, 1.0f });
             RenderCommand::clear();
             
-            Renderer::beginScene();
+            //m_camera.setPosition(glm::vec3{ 0.1f, 0.1f, 0.0f });
+            //m_camera.setZRotation(45.0f);
 
-            m_sq_shader->bind();
-            Renderer::submit(m_sq_vertex_array);
-            //m_sq_vertex_array->bind();
-            //glDrawElements(GL_TRIANGLES, m_sq_vertex_array->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
-
-            m_tr_shader->bind();
-            //m_tr_vertex_array->bind();
-            //glDrawElements(GL_TRIANGLES, m_tr_vertex_array->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
-            Renderer::submit(m_tr_vertex_array);
-
+            Renderer::beginScene(m_camera);
+            Renderer::submit(m_sq_shader, m_sq_vertex_array);
+            Renderer::submit(m_tr_shader, m_tr_vertex_array);
             Renderer::endScene();
-
 
             for (Layer* layer : m_layer_stack) {
                 layer->onUpdate();
