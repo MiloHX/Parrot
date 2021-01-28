@@ -2,9 +2,16 @@
 
 #include <imgui.h>
 
+#include <glm/gtc/matrix_transform.hpp>
+
 class ExmapleLayer : public parrot::Layer {
 public:
-    ExmapleLayer() : Layer("Example"), m_camera(-1.6f, 1.6f, -0.9, 0.9f), m_camera_position(0.0f), m_camera_rotation(0.0f) {
+    ExmapleLayer() : 
+        Layer("Example"), 
+        m_camera(-1.6f, 1.6f, -0.9, 0.9f), 
+        m_camera_position(0.0f), 
+        m_camera_rotation(0.0f),
+        m_sq_position(0.0f) {
 
         // Triangle Vertex Array
         m_tr_vertex_array.reset(parrot::VertexArray::create());
@@ -42,6 +49,7 @@ public:
             layout(location = 1) in vec4 a_color;
 
             uniform mat4 u_view_projection;
+            uniform mat4 u_transform;
         
             out vec3 v_position;
             out vec4 v_color;
@@ -49,7 +57,7 @@ public:
             void main() {
                 v_position  = a_position;
                 v_color     = a_color;
-                gl_Position = u_view_projection * vec4(a_position, 1.0);
+                gl_Position = u_view_projection * u_transform * vec4(a_position, 1.0);
             }
         )";
 
@@ -71,10 +79,10 @@ public:
 
         // Square Vertex Data
         float sq_vertices[3 * 4] = {
-            -0.75f, -0.75f, 0.0f,
-             0.75f, -0.75f, 0.0f,
-             0.75f,  0.75f, 0.0f,
-            -0.75f,  0.75f, 0.0f
+            -0.5f, -0.5f, 0.0f,
+             0.5f, -0.5f, 0.0f,
+             0.5f,  0.5f, 0.0f,
+            -0.5f,  0.5f, 0.0f
         };
 
         // Square Vertex Buffer
@@ -101,12 +109,13 @@ public:
             layout(location = 0) in vec3 a_position;
     
             uniform mat4 u_view_projection;
+            uniform mat4 u_transform;
 
             out vec3 v_position;
 
             void main() {
                 v_position  = a_position;
-                gl_Position = u_view_projection * vec4(a_position, 1.0);
+                gl_Position = u_view_projection * u_transform * vec4(a_position, 1.0);
             }
         )";
 
@@ -123,22 +132,35 @@ public:
 
     void onUpdate(parrot::TimeStep time_step) override {
 
-        if (parrot::Input::isKeyPressed(PR_KEY_A)) {
+        if (parrot::Input::isKeyPressed(PR_KEY_LEFT)) {
             m_camera_position.x -= m_camera_move_speed * time_step;
-        }else if (parrot::Input::isKeyPressed(PR_KEY_D)) {
+        } else if (parrot::Input::isKeyPressed(PR_KEY_RIGHT)) {
             m_camera_position.x += m_camera_move_speed * time_step;
         }
 
-        if (parrot::Input::isKeyPressed(PR_KEY_W)) {
+        if (parrot::Input::isKeyPressed(PR_KEY_UP)) {
             m_camera_position.y += m_camera_move_speed * time_step;
-        } else if (parrot::Input::isKeyPressed(PR_KEY_S)) {
+        } else if (parrot::Input::isKeyPressed(PR_KEY_DOWN)) {
             m_camera_position.y -= m_camera_move_speed * time_step;
         }
 
-        if (parrot::Input::isKeyPressed(PR_KEY_LEFT)) {
+        if (parrot::Input::isKeyPressed(PR_KEY_Q)) {
             m_camera_rotation += m_camera_rotation_speed * time_step;
-        } else if (parrot::Input::isKeyPressed(PR_KEY_RIGHT)) {
+        } else if (parrot::Input::isKeyPressed(PR_KEY_E)) {
             m_camera_rotation -= m_camera_rotation_speed * time_step;
+        }
+
+
+        if (parrot::Input::isKeyPressed(PR_KEY_A)) {
+            m_sq_position.x -= m_sq_move_speed * time_step;
+        } else if (parrot::Input::isKeyPressed(PR_KEY_D)) {
+            m_sq_position.x += m_sq_move_speed * time_step;
+        }
+
+        if (parrot::Input::isKeyPressed(PR_KEY_W)) {
+            m_sq_position.y += m_sq_move_speed * time_step;
+        } else if (parrot::Input::isKeyPressed(PR_KEY_S)) {
+            m_sq_position.y -= m_sq_move_speed * time_step;
         }
 
         parrot::RenderCommand::setClearColor(glm::vec4{ 0.3f, 0.3f, 0.3f, 1.0f });
@@ -148,7 +170,18 @@ public:
         m_camera.setZRotation(m_camera_rotation);
 
         parrot::Renderer::beginScene(m_camera);
-        parrot::Renderer::submit(m_sq_shader, m_sq_vertex_array);
+
+        //glm::mat4 sq_transform = glm::translate(glm::mat4(1.0f), m_sq_position);
+        glm::mat4 sq_scale     = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+
+        for (int i = 0; i < 20; ++i) {
+            for (int j = 0; j < 20; ++j) {
+                glm::vec3 pos(j * 0.11f - 1.1f, i * 0.11f - 1.1f, 0.0f);
+                glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos + m_sq_position) * sq_scale;
+                parrot::Renderer::submit(m_sq_shader, m_sq_vertex_array, transform);
+            }
+        }
+
         parrot::Renderer::submit(m_tr_shader, m_tr_vertex_array);
         parrot::Renderer::endScene();
 
@@ -176,7 +209,10 @@ private:
     glm::vec3                            m_camera_position;
     float                                m_camera_move_speed = 1.0f;
     float                                m_camera_rotation;
-    float                                m_camera_rotation_speed = 20.0f;
+    float                                m_camera_rotation_speed = 30.0f;
+
+    glm::vec3                            m_sq_position;
+    float                                m_sq_move_speed = 0.5f;
 };
 
 class Sandbox : public parrot::Application {
