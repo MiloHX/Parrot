@@ -1,8 +1,10 @@
 #include <Parrot.h>
 
+#include "platform/OpenGL/OpenGLShader.h"
 #include <imgui.h>
-
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 
 class ExmapleLayer : public parrot::Layer {
 public:
@@ -72,7 +74,7 @@ public:
             }
         )";           
 
-        m_tr_shader.reset(new parrot::Shader(vertex_source, fragment_source));
+        m_tr_shader.reset(parrot::Shader::create(vertex_source, fragment_source));
 
         // Square Vertex Array
         m_sq_vertex_array.reset(parrot::VertexArray::create());
@@ -123,14 +125,14 @@ public:
             #version 330 core
             layout(location = 0) out vec4 color;
 
-            uniform vec4 u_color;
+            uniform vec3 u_color;
 
             in vec3 v_position;
             void main() {
-                color = u_color;
+                color = vec4(u_color, 1.0);
             }
         )";
-        m_sq_shader.reset(new parrot::Shader(sq_vertex_source, sq_fragment_source));
+        m_sq_shader.reset(parrot::Shader::create(sq_vertex_source, sq_fragment_source));
     }
 
     void onUpdate(parrot::TimeStep time_step) override {
@@ -180,15 +182,13 @@ public:
         glm::vec4 red_color (1.0f, 0.3f, 0.3f, 1.0f);
         glm::vec4 blue_color(0.3f, 0.3f, 1.0f, 1.0f);
 
+        std::dynamic_pointer_cast<parrot::OpenGLShader>(m_sq_shader)->bind();
+        std::dynamic_pointer_cast<parrot::OpenGLShader>(m_sq_shader)->uploadUniformFloat3("u_color", m_sq_color);
+
         for (int i = 0; i < 20; ++i) {
             for (int j = 0; j < 20; ++j) {
                 glm::vec3 pos(j * 0.11f - 1.1f, i * 0.11f - 1.1f, 0.0f);
                 glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos + m_sq_position) * sq_scale;
-                if (i % 2 == 0) {
-                    m_sq_shader->uploadUniformFloat4("u_color", red_color);
-                } else {
-                    m_sq_shader->uploadUniformFloat4("u_color", blue_color);
-                }
                 parrot::Renderer::submit(m_sq_shader, m_sq_vertex_array, transform);
             }
         }
@@ -199,6 +199,9 @@ public:
     }
 
     void onImGuiRender() override {
+        ImGui::Begin("UNIFORMS");
+        ImGui::ColorEdit3("Square Color", glm::value_ptr(m_sq_color));
+        ImGui::End();
     }
 
     void onEvent(parrot::Event& event) override {
@@ -224,6 +227,7 @@ private:
 
     glm::vec3                            m_sq_position;
     float                                m_sq_move_speed = 0.5f;
+    glm::vec3 m_sq_color                 = glm::vec3{ 0.2f, 0.3f, 0.8f };
 };
 
 class Sandbox : public parrot::Application {
