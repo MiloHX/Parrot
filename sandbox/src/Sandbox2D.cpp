@@ -1,38 +1,10 @@
 #include "Sandbox2D.h"
 #include <imgui.h>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include "platform/OpenGL/OpenGLShader.h" // to be removed
 
 Sandbox2D::Sandbox2D() : Layer("Sandbox2D"),  m_camera_controller(1920.0f / 1080.0f, true) {
 }
 
 void Sandbox2D::onAttach() {
-    // Triangle Vertex Array
-    m_vertex_array = parrot::VertexArray::create();
-
-    float vertices[3 * 4] = {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.5f,  0.5f, 0.0f,
-        -0.5f,  0.5f, 0.0f
-    };
-
-    parrot::Ref<parrot::VertexBuffer> vertex_buffer;
-    vertex_buffer = parrot::VertexBuffer::create(vertices, sizeof(vertices));
-    vertex_buffer->setLayout({
-        { parrot::ShaderDataType::Float3, "a_position" }
-    });
-    m_vertex_array->addVertexBuffer(vertex_buffer);
-
-    uint32_t indices[6] = { 0, 1, 2, 2, 3, 0 };
-
-    parrot::Ref<parrot::IndexBuffer> index_buffer;
-    index_buffer = parrot::IndexBuffer::create(indices, sizeof(indices) / sizeof(uint32_t));
-    m_vertex_array->setIndexBuffer(index_buffer);
-
-    m_flat_color_shader = parrot::Shader::create("asset/shader/flat_color_shader.glsl");
 }
 
 void Sandbox2D::onDetach() {
@@ -45,14 +17,10 @@ void Sandbox2D::onUpdate(parrot::TimeStep time_step) {
     parrot::RenderCommand::setClearColor(glm::vec4{ 0.3f, 0.3f, 0.3f, 1.0f });
     parrot::RenderCommand::clear();
 
-    parrot::Renderer::beginScene(m_camera_controller.getCamera());
-
-    std::dynamic_pointer_cast<parrot::OpenGLShader>(m_flat_color_shader)->bind();
-    std::dynamic_pointer_cast<parrot::OpenGLShader>(m_flat_color_shader)->uploadUniformFloat4("u_color", m_color);
-
-    parrot::Renderer::submit(m_flat_color_shader, m_vertex_array, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
-
-    parrot::Renderer::endScene();
+    parrot::Renderer2D::beginScene(m_camera_controller.getCamera());
+    parrot::Renderer2D::drawQuad(glm::vec3{ -1.0f,  0.0f, 0.0f }, glm::vec2{ 0.8f, 0.8f  }, glm::vec4{ 1.0f, 1.0f, 0.0f, 1.0f });
+    parrot::Renderer2D::drawQuad(glm::vec3{  0.5f, -0.5f, 0.0f }, glm::vec2{ 0.5f, 0.75f }, glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
+    parrot::Renderer2D::endScene();
 }
 
 void Sandbox2D::onImGuiRender() {

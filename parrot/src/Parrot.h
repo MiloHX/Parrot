@@ -13,6 +13,7 @@
 //----------- Renderer ------------
 
 #include "parrot/renderer/Renderer.h"
+#include "parrot/renderer/Renderer2D.h"
 #include "parrot/renderer/RenderCommand.h"
 #include "parrot/renderer/VertexArray.h"
 #include "parrot/renderer/Shader.h"

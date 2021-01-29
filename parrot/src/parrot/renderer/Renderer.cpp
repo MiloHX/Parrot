@@ -1,5 +1,6 @@
 #include "prpch.h"
 #include "parrot/renderer/Renderer.h"
+#include "parrot/renderer/Renderer2D.h"
 #include "platform/OpenGL/OpenGLShader.h"
 
 namespace parrot {
@@ -8,6 +9,7 @@ namespace parrot {
 
     void Renderer::init() {
         RenderCommand::init();
+        Renderer2D::init();
     }
 
     void Renderer::onWindowResized(uint32_t width, uint32_t height) {

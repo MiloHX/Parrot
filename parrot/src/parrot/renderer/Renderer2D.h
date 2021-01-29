@@ -1,0 +1,17 @@
+#pragma once
+
+#include "parrot/renderer/OrthographicCamera.h"
+
+namespace parrot {
+
+    class Renderer2D {
+    public:
+        static void init();
+        static void shutdown();
+
+        static void beginScene(const OrthographicCamera camera);
+        static void endScene();
+
+        static void drawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
+    };
+}
