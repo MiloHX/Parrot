@@ -1,6 +1,7 @@
 #pragma once
 
 #include "parrot/renderer/OrthographicCamera.h"
+#include "parrot/renderer/Texture.h"
 
 namespace parrot {
 
@@ -13,5 +14,6 @@ namespace parrot {
         static void endScene();
 
         static void drawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
+        static void drawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture);
     };
 }

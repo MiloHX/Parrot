@@ -5,6 +5,7 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"),  m_camera_controller(1920.0f / 1080
 }
 
 void Sandbox2D::onAttach() {
+    m_checkerboard_texture = parrot::Texture2D::create("asset/texture/Checkerboard.png");
 }
 
 void Sandbox2D::onDetach() {
@@ -18,8 +19,9 @@ void Sandbox2D::onUpdate(parrot::TimeStep time_step) {
     parrot::RenderCommand::clear();
 
     parrot::Renderer2D::beginScene(m_camera_controller.getCamera());
-    parrot::Renderer2D::drawQuad(glm::vec3{ -1.0f,  0.0f, 0.0f }, glm::vec2{ 0.8f, 0.8f  }, glm::vec4{ 1.0f, 1.0f, 0.0f, 1.0f });
-    parrot::Renderer2D::drawQuad(glm::vec3{  0.5f, -0.5f, 0.0f }, glm::vec2{ 0.5f, 0.75f }, glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
+    parrot::Renderer2D::drawQuad(glm::vec3{ -1.0f,  0.0f,  0.0f }, glm::vec2{ 0.8f, 0.8f   }, glm::vec4{ 1.0f, 1.0f, 0.0f, 1.0f });
+    parrot::Renderer2D::drawQuad(glm::vec3{  0.5f, -0.5f,  0.0f }, glm::vec2{ 0.5f, 0.75f  }, glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
+    parrot::Renderer2D::drawQuad(glm::vec3{  0.0f,  0.0f, -0.1f }, glm::vec2{ 10.0f, 10.0f }, m_checkerboard_texture);
     parrot::Renderer2D::endScene();
 }
 

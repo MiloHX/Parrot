@@ -12,8 +12,9 @@ public:
     void onImGuiRender() override;
     void onEvent(parrot::Event& event) override;
 private:
+    parrot::OrthographicCameraController m_camera_controller;
     parrot::Ref<parrot::VertexArray>     m_vertex_array;
     parrot::Ref<parrot::Shader>          m_flat_color_shader;
-    parrot::OrthographicCameraController m_camera_controller;
+    parrot::Ref<parrot::Texture2D>       m_checkerboard_texture;
     glm::vec4                            m_color = glm::vec4{ 0.2f, 0.3f, 0.8f, 1.0f };
 };
