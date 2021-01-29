@@ -7,9 +7,9 @@
 namespace parrot {
 
     struct Renderer2Data {
-        Ref<VertexArray>     vertex_array;
-        Ref<Shader>          flat_color_shader;
-        Ref<Shader>          texture_shader;
+        Ref<VertexArray> vertex_array;
+        Ref<Shader>      texture_shader;
+        Ref<Texture2D>   white_texture;
     };
 
     static Renderer2Data* s_data;
@@ -40,8 +40,11 @@ namespace parrot {
         index_buffer = IndexBuffer::create(indices, sizeof(indices) / sizeof(uint32_t));
         s_data->vertex_array->setIndexBuffer(index_buffer);
 
-        s_data->flat_color_shader = Shader::create("asset/shader/flat_color_shader.glsl");
-        s_data->texture_shader    = Shader::create("asset/shader/texture_shader.glsl"   );
+        s_data->white_texture = Texture2D::create(1, 1);
+        uint32_t white_texture_data = 0xffffffff;
+        s_data->white_texture->setData(&white_texture_data, sizeof(uint32_t));
+
+        s_data->texture_shader = Shader::create("asset/shader/texture_shader.glsl"   );
         s_data->texture_shader->bind();
         s_data->texture_shader->setInt("u_texture", 0);
     }
@@ -51,9 +54,6 @@ namespace parrot {
     }
 
     void Renderer2D::beginScene(const OrthographicCamera camera) {
-        s_data->flat_color_shader->bind();
-        s_data->flat_color_shader->setMat4("u_view_projection", camera.getViewPorjectionMatrix());
-
         s_data->texture_shader->bind();
         s_data->texture_shader->setMat4("u_view_projection", camera.getViewPorjectionMatrix());
     }
@@ -61,25 +61,17 @@ namespace parrot {
     void Renderer2D::endScene() {
     }
 
-    void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color) {
-        s_data->flat_color_shader->bind();
-        s_data->flat_color_shader->setFloat4("u_color", color);
-
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), glm::vec3{ size.x, size.y, 1.0f });
-        s_data->flat_color_shader->setMat4("u_transform", transform);
-
-
-        s_data->vertex_array->bind();
-        RenderCommand::drawIndexed(s_data->vertex_array);
-    }
-
-    void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture) {
-        s_data->texture_shader->bind();
+    void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, const glm::vec4& color, const glm::vec2& texture_scale) {
+        s_data->texture_shader->setFloat4("u_color", color);
+        if (texture) {
+            texture->bind();
+        } else {
+            s_data->white_texture->bind();
+        }
 
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), glm::vec3{ size.x, size.y, 1.0f });
         s_data->texture_shader->setMat4("u_transform", transform);
-
-        texture->bind();
+        s_data->texture_shader->setFloat2("u_texture_scale", texture_scale);
 
         s_data->vertex_array->bind();
         RenderCommand::drawIndexed(s_data->vertex_array);
