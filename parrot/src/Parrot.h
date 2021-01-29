@@ -20,7 +20,3 @@
 #include "parrot/renderer/Texture.h"
 #include "parrot/renderer/OrthographicCamera.h"
 #include "parrot/renderer/OrthographicCameraController.h"
-
-//---------- Entry Point -----------
-
-#include "parrot/core/EntryPoint.h"
