@@ -11,6 +11,10 @@ namespace parrot {
         RenderCommand::init();
     }
 
+    void Renderer::onWindowResized(uint32_t width, uint32_t height) {
+        RenderCommand::setViewport(0, 0, width, height);
+    }
+
     void Renderer::beginScene(OrthographicCamera& camera) {
         m_scene_data->view_projection_matrix = camera.getViewPorjectionMatrix();
     }

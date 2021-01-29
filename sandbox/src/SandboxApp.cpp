@@ -192,6 +192,10 @@ public:
 
     void onEvent(parrot::Event& event) override {
         m_camera_controller.onEvent(event);
+
+        if (event.getEventType() == parrot::EventType::Window_Resize) {
+            auto& resize_event = dynamic_cast<parrot::WindowResizedEvent&>(event);
+        }
     }
 
 private:

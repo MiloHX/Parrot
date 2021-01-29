@@ -44,8 +44,10 @@ namespace parrot {
             m_time_step       = time - m_last_frame_time;
             m_last_frame_time = time;
 
-            for (Layer* layer : m_layer_stack) {
-                layer->onUpdate(m_time_step);
+            if (!m_minimized) {
+                for (Layer* layer : m_layer_stack) {
+                    layer->onUpdate(m_time_step);
+                }
             }
 
             m_imgui_layer->begin();
@@ -60,7 +62,8 @@ namespace parrot {
 
     void Application::onEvent(Event& e) {
         EventDispatcher dispatcher(e);
-        dispatcher.dispatch<WindowCloseEvent>(PR_BIND_EVENT_FUNC(Application::onWindowClose));
+        dispatcher.dispatch<WindowCloseEvent  >(PR_BIND_EVENT_FUNC(Application::onWindowClose  ));
+        dispatcher.dispatch<WindowResizedEvent>(PR_BIND_EVENT_FUNC(Application::onWindowResized));
 
         for (auto it = m_layer_stack.end(); it != m_layer_stack.begin();) {
             (*--it)->onEvent(e);
@@ -70,9 +73,23 @@ namespace parrot {
         }
     }
 
-    bool Application::onWindowClose(Event& e) {
+    bool Application::onWindowClose(WindowCloseEvent& event) {
         m_running = false;
         return true;
+    }
+
+
+    bool Application::onWindowResized(WindowResizedEvent& event) {
+
+        if (event.getWidth() == 0 || event.getHeight() == 0) {
+            m_minimized = true;
+            return false;
+        }
+        m_minimized = false;
+
+        Renderer::onWindowResized(event.getWidth(), event.getHeight());
+
+        return false;
     }
 
 }

@@ -11,7 +11,7 @@ namespace parrot {
     public:
         OrthographicCameraController(float aspect_ratio, bool rotation = false);
 
-        OrthographicCamera& getCamera() { return m_camera; }
+        OrthographicCamera&       getCamera()       { return m_camera; }
         const OrthographicCamera& getCamera() const { return m_camera; }
         void onUpdate(TimeStep time_step);
         void onEvent(Event& event);
