@@ -74,7 +74,7 @@ public:
             }
         )";           
 
-        m_tr_shader.reset(parrot::Shader::create(vertex_source, fragment_source));
+        m_tr_shader = parrot::Shader::create("tr_shader", vertex_source, fragment_source);
 
         // Square Vertex Array
         m_sq_vertex_array.reset(parrot::VertexArray::create());
@@ -133,16 +133,17 @@ public:
                 color = vec4(u_color, 1.0);
             }
         )";
-        m_sq_shader.reset(parrot::Shader::create(sq_vertex_source, sq_fragment_source));
+        m_sq_shader = parrot::Shader::create("sq_shader", sq_vertex_source, sq_fragment_source);
 
         // Texture Shaders
-        m_tx_shader.reset(parrot::Shader::create("asset/shader/texture_shader.glsl"));
+        //m_tx_shader = parrot::Shader::create("asset/shader/texture_shader.glsl");
+        auto tx_shader =  m_shader_library.load("asset/shader/texture_shader.glsl");
 
         m_texture      = parrot::Texture2D::create("asset/texture/Checkerboard.png");
         m_logo_texture = parrot::Texture2D::create("asset/texture/icon64.png"      );
 
-        std::dynamic_pointer_cast<parrot::OpenGLShader>(m_tx_shader)->bind();
-        std::dynamic_pointer_cast<parrot::OpenGLShader>(m_tx_shader)->uploadUniformInt("u_texture", 0);
+        std::dynamic_pointer_cast<parrot::OpenGLShader>(tx_shader)->bind();
+        std::dynamic_pointer_cast<parrot::OpenGLShader>(tx_shader)->uploadUniformInt("u_texture", 0);
     }
 
     void onUpdate(parrot::TimeStep time_step) override {
@@ -202,11 +203,13 @@ public:
             }
         }
 
+        auto tx_shader = m_shader_library.get("texture_shader");
+
         m_texture->bind();
         glm::mat4 tx_scale = glm::scale(glm::mat4(1.0f), glm::vec3(1.5f));
-        parrot::Renderer::submit(m_tx_shader, m_sq_vertex_array, glm::translate(glm::mat4(1.0f), m_sq_position) * tx_scale);
+        parrot::Renderer::submit(tx_shader, m_sq_vertex_array, glm::translate(glm::mat4(1.0f), m_sq_position) * tx_scale);
         m_logo_texture->bind();
-        parrot::Renderer::submit(m_tx_shader, m_sq_vertex_array, glm::translate(glm::mat4(1.0f), m_sq_position) * tx_scale);
+        parrot::Renderer::submit(tx_shader, m_sq_vertex_array, glm::translate(glm::mat4(1.0f), m_sq_position) * tx_scale);
 
 
         //parrot::Renderer::submit(m_tr_shader, m_tr_vertex_array);
@@ -230,23 +233,23 @@ public:
     }
 
 private:
+    parrot::ShaderLibrary              m_shader_library;
+    parrot::Ref<parrot::VertexArray>   m_tr_vertex_array;
+    parrot::Ref<parrot::VertexArray>   m_sq_vertex_array;
+    parrot::Ref<parrot::Shader     >   m_tr_shader;
+    parrot::Ref<parrot::Shader     >   m_sq_shader;
+    // parrot::Ref<parrot::Shader     >   m_tx_shader;
+    parrot::Ref<parrot::Texture2D  >   m_texture;
+    parrot::Ref<parrot::Texture2D  >   m_logo_texture;
+    parrot::OrthographicCamera         m_camera;
+    glm::vec3                          m_camera_position;
+    float                              m_camera_move_speed = 1.0f;
+    float                              m_camera_rotation;
+    float                              m_camera_rotation_speed = 30.0f;
 
-    parrot::Ref<parrot::VertexArray> m_tr_vertex_array;
-    parrot::Ref<parrot::VertexArray> m_sq_vertex_array;
-    parrot::Ref<parrot::Shader     > m_tr_shader;
-    parrot::Ref<parrot::Shader     > m_sq_shader;
-    parrot::Ref<parrot::Shader     > m_tx_shader;
-    parrot::Ref<parrot::Texture2D  > m_texture;
-    parrot::Ref<parrot::Texture2D  > m_logo_texture;
-    parrot::OrthographicCamera           m_camera;
-    glm::vec3                            m_camera_position;
-    float                                m_camera_move_speed = 1.0f;
-    float                                m_camera_rotation;
-    float                                m_camera_rotation_speed = 30.0f;
-
-    glm::vec3                            m_sq_position;
-    float                                m_sq_move_speed = 0.5f;
-    glm::vec3 m_sq_color                 = glm::vec3{ 0.2f, 0.3f, 0.8f };
+    glm::vec3                          m_sq_position;
+    float                              m_sq_move_speed = 0.5f;
+    glm::vec3                          m_sq_color = glm::vec3{ 0.2f, 0.3f, 0.8f };
 };
 
 class Sandbox : public parrot::Application {

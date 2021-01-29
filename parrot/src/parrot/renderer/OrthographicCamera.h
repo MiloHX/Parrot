@@ -32,5 +32,4 @@ namespace parrot {
         glm::vec3 m_position   = glm::vec3{ 0.0f, 0.0f, 0.0f };
         float     m_z_rotation = 0.0f;
     };
-
 }

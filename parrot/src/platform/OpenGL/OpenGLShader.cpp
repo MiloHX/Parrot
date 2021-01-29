@@ -22,9 +22,15 @@ namespace parrot {
         std::string shader_source = readFile(file_path);
         auto processed_shader_source = preprocess(shader_source);
         compile(processed_shader_source);
+
+        auto last_slash = file_path.find_last_of("/\\");
+        last_slash = last_slash == std::string::npos ? 0 : last_slash + 1;
+        auto last_dot = file_path.rfind('.');
+        auto count = last_dot == std::string::npos ? file_path.size() - last_slash : last_dot - last_slash;
+        m_name = file_path.substr(last_slash, count);
     }
 
-    OpenGLShader::OpenGLShader(const std::string& vertex_source, const std::string& fragment_source) {
+    OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertex_source, const std::string& fragment_source) : m_name(name) {
         std::unordered_map<GLenum, std::string> processed_shader_source;
         processed_shader_source[GL_VERTEX_SHADER  ] = vertex_source;
         processed_shader_source[GL_FRAGMENT_SHADER] = fragment_source;
@@ -37,7 +43,7 @@ namespace parrot {
 
     std::string OpenGLShader::readFile(const std::string& file_path) {
         std::string result;
-        std::ifstream in(file_path, std::ios::in, std::ios::binary);
+        std::ifstream in(file_path, std::ios::in | std::ios::binary);
         if (in) {
             in.seekg(0, std::ios::end);
             result.resize(in.tellg());
@@ -75,14 +81,19 @@ namespace parrot {
     void OpenGLShader::compile(const std::unordered_map<GLenum, std::string>& processed_shader_source) {
 
         GLuint program = glCreateProgram();
-        std::vector<GLenum> processed_shader_id_list(processed_shader_source.size());
+
+        std::vector<GLenum> processed_shader_id_list;
+        processed_shader_id_list.reserve(processed_shader_source.size());
+
         for (auto& source_item : processed_shader_source) {
             GLenum shader_type = source_item.first;
             const std::string& source = source_item.second;
+
             GLuint shader = glCreateShader(shader_type);
             const GLchar* source_string = source.c_str();
             glShaderSource(shader, 1, &source_string, 0);
             glCompileShader(shader);
+
             GLint is_compiled = 0;
             glGetShaderiv(shader, GL_COMPILE_STATUS, &is_compiled);  // Check compile result
             if (is_compiled == GL_FALSE) {                                  // Error handling
