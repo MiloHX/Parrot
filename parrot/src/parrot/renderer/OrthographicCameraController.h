@@ -1,6 +1,6 @@
 #pragma once
 
-#include "renderer/OrthographicCamera.h"
+#include "parrot/renderer/OrthographicCamera.h"
 #include "parrot/core/TimeStep.h"
 #include "parrot/event/ApplicationEvent.h"
 #include "parrot/event/MouseEvent.h"

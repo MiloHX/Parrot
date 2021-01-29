@@ -1,6 +1,6 @@
 #pragma once
 
-#include "parrot/Window.h"
+#include "parrot/core/Window.h"
 #include "parrot/renderer/GraphicsContext.h"
 
 #include <GLFW/glfw3.h>

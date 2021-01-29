@@ -1,5 +1,5 @@
 #include "prpch.h"
-#include "OpenGLShader.h"
+#include "platform/OpenGL/OpenGLShader.h"
 
 #include <fstream>
 #include <glm/gtc/type_ptr.hpp>

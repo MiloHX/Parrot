@@ -2,7 +2,7 @@
 
 #include "prpch.h"
 
-#include "parrot/Core.h"
+#include "parrot/core/Core.h"
 #include "parrot/event/Event.h"
 
 namespace parrot {

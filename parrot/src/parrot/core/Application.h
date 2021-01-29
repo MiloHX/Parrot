@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Core.h"
-#include "Window.h"
-#include "LayerStack.h"
-#include "event/Event.h"
-#include "event/ApplicationEvent.h"
-#include "imgui/ImGuiLayer.h"
+#include "parrot/core/Core.h"
+#include "parrot/core/Window.h"
+#include "parrot/core/LayerStack.h"
+#include "parrot/event/Event.h"
+#include "parrot/event/ApplicationEvent.h"
+#include "parrot/imgui/ImGuiLayer.h"
 #include "parrot/core/TimeStep.h"
 
 namespace parrot {

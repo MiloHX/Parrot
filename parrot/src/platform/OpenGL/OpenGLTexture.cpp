@@ -1,5 +1,5 @@
 #include "prpch.h"
-#include "OpenGLTexture.h"
+#include "platform/OpenGL/OpenGLTexture.h"
 
 #include <glad/glad.h>
 #include <stb_image.h>

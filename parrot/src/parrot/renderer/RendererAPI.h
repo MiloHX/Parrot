@@ -1,6 +1,6 @@
 #pragma once
 
-#include "VertexArray.h"
+#include "parrot/renderer/VertexArray.h"
 
 #include <memory>
 #include <glm/glm.hpp>

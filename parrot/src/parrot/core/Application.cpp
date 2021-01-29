@@ -1,6 +1,6 @@
 #include "prpch.h"
-#include "Application.h"
-#include "Input.h"
+#include "parrot/core/Application.h"
+#include "parrot/core/Input.h"
 #include "parrot/renderer/Renderer.h"
 
 #include "GLFW/glfw3.h"

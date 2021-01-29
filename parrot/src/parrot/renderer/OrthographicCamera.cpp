@@ -1,5 +1,5 @@
 #include "prpch.h"
-#include "OrthographicCamera.h"
+#include "parrot/renderer/OrthographicCamera.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 

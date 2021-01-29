@@ -15,7 +15,7 @@
 
 #include <glm/glm.hpp>
 
-#include "parrot/Log.h"
+#include "parrot/core/Log.h"
 
 #ifdef PR_PLATFORM_WINDOWS
     #include <windows.h>

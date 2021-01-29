@@ -1,6 +1,6 @@
 #pragma once
 
-#include "parrot/core.h"
+#include "parrot/core/core.h"
 
 #include <string>
 

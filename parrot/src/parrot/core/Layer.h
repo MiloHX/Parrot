@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Core.h"
-#include "event/Event.h"
-#include "core/TimeStep.h"
+#include "parrot/core/Core.h"
+#include "parrot/event/Event.h"
+#include "parrot/core/TimeStep.h"
 
 #include <string>
 

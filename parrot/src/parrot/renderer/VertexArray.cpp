@@ -1,7 +1,6 @@
 #include "prpch.h"
-#include "VertexArray.h"
-
-#include "Renderer.h"
+#include "parrot/renderer/VertexArray.h"
+#include "parrot/renderer/Renderer.h"
 #include "platform/OpenGL/OpenGLVertexArray.h"
 
 namespace parrot {

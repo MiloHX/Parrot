@@ -1,6 +1,6 @@
 #include "prpch.h"
-#include "Buffer.h"
-#include "Renderer.h"
+#include "parrot/renderer/Buffer.h"
+#include "parrot/renderer/Renderer.h"
 #include "platform/OpenGL/OpenGLBuffer.h"
 
 namespace parrot {

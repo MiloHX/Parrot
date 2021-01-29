@@ -1,7 +1,7 @@
 #include "prpch.h"
-#include "Texture.h"
+#include "parrot/renderer/Texture.h"
 
-#include "Renderer.h"
+#include "parrot/renderer/Renderer.h"
 #include "platform/OpenGL/OpenGLTexture.h"
 
 namespace parrot {

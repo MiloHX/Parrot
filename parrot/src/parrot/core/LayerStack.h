@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Core.h"
-#include "Layer.h"
+#include "parrot/core/Core.h"
+#include "parrot/core/Layer.h"
 
 namespace parrot {
 

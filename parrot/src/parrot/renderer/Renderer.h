@@ -1,8 +1,8 @@
 #pragma once
 
-#include "RenderCommand.h"
-#include "OrthographicCamera.h"
-#include "Shader.h"
+#include "parrot/renderer/RenderCommand.h"
+#include "parrot/renderer/OrthographicCamera.h"
+#include "parrot/renderer/Shader.h"
 
 namespace parrot {
     

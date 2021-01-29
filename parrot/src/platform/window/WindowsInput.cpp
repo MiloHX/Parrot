@@ -1,7 +1,7 @@
 #include "prpch.h"
-#include "WindowsInput.h"
-#include "parrot/Input.h"
-#include "parrot/Application.h"
+#include "platform/window/WindowsInput.h"
+#include "parrot/core/Input.h"
+#include "parrot/core/Application.h"
 
 #include <GLFW/glfw3.h>
 

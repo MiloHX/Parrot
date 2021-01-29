@@ -1,5 +1,5 @@
 #include "prpch.h"
-#include "OpenGLBuffer.h"
+#include "platform/OpenGL/OpenGLBuffer.h"
 
 #include "glad/glad.h"
 

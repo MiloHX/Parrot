@@ -1,7 +1,7 @@
 #include "prpch.h"
 #include "OrthographicCameraController.h"
-#include "parrot/Input.h"
-#include "parrot/KeyCode.h"
+#include "parrot/core/Input.h"
+#include "parrot/core/KeyCode.h"
 
 namespace parrot {
 

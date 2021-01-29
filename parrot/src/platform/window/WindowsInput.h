@@ -1,6 +1,6 @@
 #pragma once
 
-#include "parrot/Input.h"
+#include "parrot/core/Input.h"
 
 namespace parrot {
 
