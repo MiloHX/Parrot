@@ -61,15 +61,31 @@ namespace parrot {
     void Renderer2D::endScene() {
     }
 
-    void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, const glm::vec4& color, const glm::vec2& texture_scale) {
+    void Renderer2D::drawQuad(
+        const glm::vec3&      position, 
+        const glm::vec2&      size, 
+        float                 rotation, 
+        const Ref<Texture2D>& texture, 
+        const glm::vec4&      color, 
+        const glm::vec2&      texture_scale
+    ) {
         s_data->texture_shader->setFloat4("u_color", color);
         if (texture) {
             texture->bind();
         } else {
             s_data->white_texture->bind();
         }
-
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), glm::vec3{ size.x, size.y, 1.0f });
+        glm::mat4 transform;
+        if (rotation == 0) {
+            transform =
+                glm::translate(glm::mat4(1.0f), position) *
+                glm::rotate(glm::mat4(1.0f), rotation, glm::vec3{ 0.0f, 0.0f, 1.0f }) *
+                glm::scale(glm::mat4(1.0f), glm::vec3{ size.x, size.y, 1.0f });
+        } else {
+            transform =
+                glm::translate(glm::mat4(1.0f), position) *
+                glm::scale(glm::mat4(1.0f), glm::vec3{ size.x, size.y, 1.0f });
+        }
         s_data->texture_shader->setMat4("u_transform", transform);
         s_data->texture_shader->setFloat2("u_texture_scale", texture_scale);
 

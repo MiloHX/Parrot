@@ -25,9 +25,9 @@ void Sandbox2D::onUpdate(parrot::TimeStep time_step) {
         parrot::RenderCommand::clear();
 
         parrot::Renderer2D::beginScene(m_camera_controller.getCamera());
-        parrot::Renderer2D::drawQuad(glm::vec3{ -1.0f,  0.0f,  0.0f }, glm::vec2{ 0.8f, 0.8f }, nullptr, glm::vec4{ 1.0f, 1.0f, 0.0f, 1.0f });
-        parrot::Renderer2D::drawQuad(glm::vec3{ 0.5f, -0.5f,  0.0f }, glm::vec2{ 0.5f, 0.75f }, nullptr, glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
-        parrot::Renderer2D::drawQuad(glm::vec3{ 0.0f,  0.0f, -0.1f }, glm::vec2{ 10.0f, 10.0f }, m_checkerboard_texture, glm::vec4(1.0), glm::vec2(10.0f));
+        parrot::Renderer2D::drawQuad(glm::vec3{ -1.0f,  0.0f,  0.0f }, glm::vec2{ 0.8f,  0.8f  },      0, nullptr, glm::vec4{ 1.0f, 1.0f, 0.0f, 1.0f });
+        parrot::Renderer2D::drawQuad(glm::vec3{ 0.5f,  -0.5f,  0.0f }, glm::vec2{ 0.5f,  0.75f }, -30.0f, nullptr, glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
+        parrot::Renderer2D::drawQuad(glm::vec3{ 0.0f,   0.0f, -0.1f }, glm::vec2{ 10.0f, 10.0f }, 60.0f, m_checkerboard_texture, glm::vec4{1.0f, 1.0f, 0.9f, 1.0f}, glm::vec2(10.0f) );
         parrot::Renderer2D::endScene();
     }
 }
