@@ -11,7 +11,7 @@ namespace parrot {
                 PR_CORE_ASSERT(false, "RendererAPI::None is not supported");
                 return nullptr;
             case RendererAPI::API::OpenGL:
-                return std::make_shared<OpenGLVertexArray>();
+                return createRef<OpenGLVertexArray>();
         }
 
         PR_CORE_ASSERT(false, "Unknown RendererAPI when creating vertex buffer");

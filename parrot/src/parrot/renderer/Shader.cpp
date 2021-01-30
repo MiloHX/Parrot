@@ -10,7 +10,7 @@ namespace parrot {
                 PR_CORE_ASSERT(false, "RendererAPI::None is not supported");
                 return nullptr;
             case RendererAPI::API::OpenGL:
-                return std::make_shared<OpenGLShader>(file_path);
+                return createRef<OpenGLShader>(file_path);
         }
 
         PR_CORE_ASSERT(false, "Unknown RendererAPI when creating shader");
@@ -23,7 +23,7 @@ namespace parrot {
                 PR_CORE_ASSERT(false, "RendererAPI::None is not supported");
                 return nullptr;
             case RendererAPI::API::OpenGL:
-                return std::make_shared<OpenGLShader>(name, vertex_source, fragment_source);
+                return createRef<OpenGLShader>(name, vertex_source, fragment_source);
         }
 
         PR_CORE_ASSERT(false, "Unknown RendererAPI when creating shader");

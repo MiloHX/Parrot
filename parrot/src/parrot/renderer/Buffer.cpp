@@ -11,7 +11,7 @@ namespace parrot {
                 PR_CORE_ASSERT(false, "RendererAPI::None is not supported");
                 return nullptr;
             case RendererAPI::API::OpenGL:
-                return std::make_shared<OpenGLVertexBuffer>(vertices, size);
+                return createRef<OpenGLVertexBuffer>(vertices, size);
         }
 
         PR_CORE_ASSERT(false, "Unknown RendererAPI when creating vertex buffer");
@@ -24,7 +24,7 @@ namespace parrot {
                 PR_CORE_ASSERT(false, "RendererAPI::None is not supported");
                 return nullptr;
             case RendererAPI::API::OpenGL:
-                return std::make_shared<OpenGLIndexBuffer>(indices, count);
+                return createRef<OpenGLIndexBuffer>(indices, count);
         }
 
         PR_CORE_ASSERT(false, "Unknown RendererAPI when creating index buffer");
