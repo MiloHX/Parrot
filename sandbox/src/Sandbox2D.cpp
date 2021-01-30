@@ -33,9 +33,6 @@ void Sandbox2D::onUpdate(parrot::TimeStep time_step) {
 }
 
 void Sandbox2D::onImGuiRender() {
-    ImGui::Begin("UNIFORMS");
-    ImGui::ColorEdit3("Square Color", glm::value_ptr(m_color));
-    ImGui::End();
 }
 
 void Sandbox2D::onEvent(parrot::Event& event) {

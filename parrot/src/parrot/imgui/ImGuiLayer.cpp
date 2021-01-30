@@ -82,6 +82,7 @@ namespace parrot {
     void ImGuiLayer::onImGuiRender() {
 
         // TODO: Should it be moved to a dedicated layer?
+        #if 0
         ImGui::Begin("Profiler");
         for (const ProfileResult& result : Profiler::getResult()) {
             char label[50];
@@ -91,6 +92,7 @@ namespace parrot {
         }
         Profiler::clear();
         ImGui::End();
+        #endif
     }
 
 }
