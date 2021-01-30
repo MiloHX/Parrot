@@ -1,14 +1,18 @@
 #pragma once
 
-//---------- Application -----------
+//---------- Core -----------
 
 #include "parrot/core/Application.h"
 #include "parrot/core/TimeStep.h"
-#include "parrot/core/Log.h"
 #include "parrot/core/Layer.h"
 #include "parrot/core/input.h"
 #include "parrot/core/KeyCode.h"
 #include "parrot/imgui/ImGuiLayer.h"
+
+//----------- Tool ------------
+#include "parrot/core/Log.h"
+#include "parrot/tool/Profiler.h"
+#include "parrot/tool/ScopeTimer.h"
 
 //----------- Renderer ------------
 

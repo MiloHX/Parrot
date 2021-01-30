@@ -5,6 +5,7 @@
 #include "backends/imgui_impl_opengl3.h"
 
 #include "parrot/core/Application.h"
+#include "parrot/tool/Profiler.h"
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
@@ -79,8 +80,17 @@ namespace parrot {
     }
 
     void ImGuiLayer::onImGuiRender() {
-        //static bool show = true;
-        //ImGui::ShowDemoWindow(&show);
+
+        // TODO: Should it be moved to a dedicated layer?
+        ImGui::Begin("Profiler");
+        for (const ProfileResult& result : Profiler::getResult()) {
+            char label[50];
+            strcpy(label, "%.3fms ");
+            strcat(label, result.name);
+            ImGui::Text(label, result.time);
+        }
+        Profiler::clear();
+        ImGui::End();
     }
 
 }
