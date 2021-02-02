@@ -17,6 +17,10 @@ namespace parrot {
         virtual void     bind     (uint32_t slot) const       override; 
         virtual void     setData  (void* data, uint32_t size) override;
 
+        virtual bool     operator==(const Texture& other) const override {
+            return m_renderer_id == ((OpenGLTexture2D&)other).m_renderer_id;
+        }
+
     private:
         std::string m_path;
         uint32_t    m_width       = 0;

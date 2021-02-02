@@ -173,6 +173,10 @@ namespace parrot {
         uploadUniformMat4(name, value);
     }
 
+    void OpenGLShader::setIntArray(const std::string& name, int* values, uint32_t count) {
+        uploadUniformIntArray(name, values, count);
+    }
+
     void OpenGLShader::uploadUniformInt(const std::string& name, int value) {
         GLint location =  glGetUniformLocation(m_renderer_id, name.c_str());
         glUniform1i(location, value);
@@ -209,6 +213,9 @@ namespace parrot {
 
     }
 
-
+    void OpenGLShader::uploadUniformIntArray(const std::string& name, int* values, uint32_t count) {
+        GLint location =  glGetUniformLocation(m_renderer_id, name.c_str());
+        glUniform1iv(location, count, values);
+    }
 
 }
