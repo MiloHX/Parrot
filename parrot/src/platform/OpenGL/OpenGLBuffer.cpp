@@ -7,6 +7,12 @@ namespace parrot {
 
     // Vertex Buffer
 
+    OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size) {
+        glCreateBuffers(1, &m_renderer_id);
+        glBindBuffer(GL_ARRAY_BUFFER, m_renderer_id);
+        glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+    }
+
     OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size) {
         glCreateBuffers(1, &m_renderer_id);
         glBindBuffer(GL_ARRAY_BUFFER, m_renderer_id);
