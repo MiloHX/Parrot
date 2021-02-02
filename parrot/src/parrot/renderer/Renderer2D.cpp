@@ -33,6 +33,8 @@ namespace parrot {
         std::array<Ref<Texture2D>, s_max_texture_slots> texture_slots;
 
         uint32_t texture_slot_index = 1;
+
+        glm::vec4 quad_vertex_positions[4];
     };
 
     static Renderer2Data s_data;
@@ -84,6 +86,11 @@ namespace parrot {
         s_data.quad_texture_shader = Shader::create("asset/shader/texture_shader.glsl"   );
         s_data.quad_texture_shader->bind();
         s_data.quad_texture_shader->setIntArray("u_textures", texture_samplers, s_data.s_max_texture_slots);
+
+        s_data.quad_vertex_positions[0] = glm::vec4{ -0.5f, -0.5f, 0.0f, 1.0f };
+        s_data.quad_vertex_positions[1] = glm::vec4{  0.5f, -0.5f, 0.0f, 1.0f };
+        s_data.quad_vertex_positions[2] = glm::vec4{  0.5f,  0.5f, 0.0f, 1.0f };
+        s_data.quad_vertex_positions[3] = glm::vec4{ -0.5f,  0.5f, 0.0f, 1.0f };
     }
 
     void Renderer2D::shutdown() {
@@ -136,28 +143,47 @@ namespace parrot {
             }
         } 
 
-        s_data.quad_vertices_pointer->position  = position;
+        glm::mat4 transform;
+        if (rotation) {
+            if (size.x != 1.0f || size.y != 1.0f) {
+                transform = glm::translate(glm::mat4(1.0f), position)
+                                    * glm::rotate   (glm::mat4(1.0f), rotation, glm::vec3(0.0f, 0.0f, 1.0f))
+                                    * glm::scale    (glm::mat4(1.0f), glm::vec3{ size.x, size.y, 1.0f });
+            } else {
+                transform = glm::translate(glm::mat4(1.0f), position)
+                          * glm::scale    (glm::mat4(1.0f), glm::vec3{ size.x, size.y, 1.0f });
+            }
+        } else {
+            if (size.x != 1.0f || size.y != 1.0f) {
+                transform = glm::translate(glm::mat4(1.0f), position)
+                          * glm::scale    (glm::mat4(1.0f), glm::vec3{ size.x, size.y, 1.0f });
+            } else {
+                transform = glm::translate(glm::mat4(1.0f), position);
+            }
+        } 
+
+        s_data.quad_vertices_pointer->position  = glm::vec3(transform * s_data.quad_vertex_positions[0]);
         s_data.quad_vertices_pointer->color     = color;
         s_data.quad_vertices_pointer->tex_coord = glm::vec2{ 0.0f, 0.0f };
         s_data.quad_vertices_pointer->tex_index = texture_index;
         s_data.quad_vertices_pointer->tex_scale = texture_scale;
         s_data.quad_vertices_pointer++;
 
-        s_data.quad_vertices_pointer->position  = glm::vec3{ position.x + size.x, position.y, position.z };
+        s_data.quad_vertices_pointer->position  = glm::vec3(transform * s_data.quad_vertex_positions[1]);
         s_data.quad_vertices_pointer->color     = color;
         s_data.quad_vertices_pointer->tex_coord = glm::vec2{ 1.0f, 0.0f };
         s_data.quad_vertices_pointer->tex_index = texture_index;
         s_data.quad_vertices_pointer->tex_scale = texture_scale;
         s_data.quad_vertices_pointer++;
 
-        s_data.quad_vertices_pointer->position  = glm::vec3{ position.x + size.x, position.y + size.y, position.z };
+        s_data.quad_vertices_pointer->position  = glm::vec3(transform * s_data.quad_vertex_positions[2]);
         s_data.quad_vertices_pointer->color     = color;
         s_data.quad_vertices_pointer->tex_coord = glm::vec2{ 1.0f, 1.0f };
         s_data.quad_vertices_pointer->tex_index = texture_index;
         s_data.quad_vertices_pointer->tex_scale = texture_scale;
         s_data.quad_vertices_pointer++;
 
-        s_data.quad_vertices_pointer->position  = glm::vec3{ position.x, position.y + size.y, position.z };
+        s_data.quad_vertices_pointer->position  = glm::vec3(transform * s_data.quad_vertex_positions[3]);
         s_data.quad_vertices_pointer->color     = color;
         s_data.quad_vertices_pointer->tex_coord = glm::vec2{ 0.0f, 1.0f };
         s_data.quad_vertices_pointer->tex_index = texture_index;
@@ -166,27 +192,5 @@ namespace parrot {
 
         s_data.quad_index_count +=6;
 
-        //s_data.quad_texture_shader->setFloat4("u_color", color);
-        //if (texture) {
-        //    texture->bind();
-        //} else {
-        //    s_data.white_texture->bind();
-        //}
-        //glm::mat4 transform;
-        //if (rotation == 0) {
-        //    transform =
-        //        glm::translate(glm::mat4(1.0f), position) *
-        //        glm::scale(glm::mat4(1.0f), glm::vec3{ size.x, size.y, 1.0f });
-        //} else {
-        //    transform =
-        //        glm::translate(glm::mat4(1.0f), position) *
-        //        glm::rotate(glm::mat4(1.0f), rotation, glm::vec3{ 0.0f, 0.0f, 1.0f }) *
-        //        glm::scale(glm::mat4(1.0f), glm::vec3{ size.x, size.y, 1.0f });
-        //}
-        //s_data.quad_texture_shader->setMat4("u_transform", transform);
-        //s_data.quad_texture_shader->setFloat2("u_texture_scale", texture_scale);
-
-        //s_data.vertex_array->bind();
-        //RenderCommand::drawIndexed(s_data.vertex_array);
     }
 }
