@@ -22,8 +22,8 @@ namespace parrot {
             s_renderer_API->clear();
         }
 
-        inline static void drawIndexed(const Ref<VertexArray>& vertex_array) {
-            s_renderer_API->drawIndexed(vertex_array);
+        inline static void drawIndexed(const Ref<VertexArray>& vertex_array, uint32_t count = 0) {
+            s_renderer_API->drawIndexed(vertex_array, count);
         }
 
     private:

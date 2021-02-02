@@ -14,7 +14,7 @@ namespace parrot {
         virtual void unbind() const override;
         virtual void setData(const void* data, uint32_t size) override;
 
-        virtual void                setLayout(const BufferLayout& layout) override {
+        virtual void setLayout(const BufferLayout& layout) override {
             m_layout = layout;
         }
         virtual const BufferLayout& getLayout() const override {
