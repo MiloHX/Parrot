@@ -41,12 +41,15 @@ namespace parrot {
         };
 
         s_data.vertex_buffer = VertexBuffer::create(vertices, sizeof(vertices));
+        //s_data.vertex_buffer = VertexBuffer::create(s_data.max_vertices_per_draw * sizeof(QuadVertex));
         s_data.vertex_buffer->setLayout({
             { ShaderDataType::Float3, "a_position"  },
             { ShaderDataType::Float4, "a_color"     },
             { ShaderDataType::Float2, "a_tex_coord" }
         });
         s_data.vertex_array->addVertexBuffer(s_data.vertex_buffer);
+
+        s_data.vertex_buffer_begin = new QuadVertex[s_data.max_vertices_per_draw];
 
         uint32_t indices[6] = { 0, 1, 2, 2, 3, 0 };
 
@@ -69,9 +72,19 @@ namespace parrot {
     void Renderer2D::beginScene(const OrthographicCamera camera) {
         s_data.texture_shader->bind();
         s_data.texture_shader->setMat4("u_view_projection", camera.getViewPorjectionMatrix());
+
+        s_data.vertex_buffer_pointer = s_data.vertex_buffer_begin;
     }
 
     void Renderer2D::endScene() {
+        //uint32_t data_size = (uint8_t)s_data.vertex_buffer_pointer - (uint8_t)s_data.vertex_buffer_begin;
+        uint32_t data_size = 36;
+        s_data.vertex_buffer->setData(s_data.vertex_buffer_begin, data_size);
+        flush();
+    }
+
+    void Renderer2D::flush(){
+        RenderCommand::drawIndexed(s_data.vertex_array); // Temp
     }
 
     void Renderer2D::drawQuad(
@@ -82,6 +95,26 @@ namespace parrot {
         const glm::vec4&      color, 
         const glm::vec2&      texture_scale
     ) {
+        s_data.vertex_buffer_pointer->position   = glm::vec3{-0.5f, -0.5f, 0.0f };
+        s_data.vertex_buffer_pointer->color      = glm::vec4{ 1.0f,  1.0f, 1.0f, 1.0f };
+        s_data.vertex_buffer_pointer->text_coord = glm::vec2{ 0.0f, 0.0f };
+        s_data.vertex_buffer_pointer++;
+
+        s_data.vertex_buffer_pointer->position   = glm::vec3{ 0.5f, -0.5f, 0.0f };
+        s_data.vertex_buffer_pointer->color      = glm::vec4{ 1.0f,  1.0f, 1.0f, 1.0f };
+        s_data.vertex_buffer_pointer->text_coord = glm::vec2{ 1.0f, 0.0f };
+        s_data.vertex_buffer_pointer++;
+
+        s_data.vertex_buffer_pointer->position   = glm::vec3{ 0.5f,  0.5f, 0.0f };
+        s_data.vertex_buffer_pointer->color      = glm::vec4{ 1.0f,  1.0f, 1.0f, 1.0f };
+        s_data.vertex_buffer_pointer->text_coord = glm::vec2{ 1.0f, 1.0f };
+        s_data.vertex_buffer_pointer++;
+
+        s_data.vertex_buffer_pointer->position   = glm::vec3{-0.5f,  0.5f, 0.0f };
+        s_data.vertex_buffer_pointer->color      = glm::vec4{ 1.0f,  1.0f, 1.0f, 1.0f };
+        s_data.vertex_buffer_pointer->text_coord = glm::vec2{ 0.0f, 1.0f };
+        s_data.vertex_buffer_pointer++;
+
         s_data.texture_shader->setFloat4("u_color", color);
         if (texture) {
             texture->bind();

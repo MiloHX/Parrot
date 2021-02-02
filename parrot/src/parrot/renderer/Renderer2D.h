@@ -12,6 +12,7 @@ namespace parrot {
 
         static void beginScene(const OrthographicCamera camera);
         static void endScene();
+        static void flush();
 
         static void drawQuad(
             const glm::vec3&      position, 

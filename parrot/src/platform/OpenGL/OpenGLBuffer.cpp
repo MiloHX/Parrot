@@ -31,6 +31,11 @@ namespace parrot {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
+    void OpenGLVertexBuffer::setData(const void* data, uint32_t size) {
+        glBindBuffer(GL_ARRAY_BUFFER, m_renderer_id);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
+    }
+
     // IndexBuffer
 
     OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t count) : m_count(count) {
