@@ -14,6 +14,18 @@ namespace parrot {
         static void endScene();
         static void flush();
 
+        static void       resetStatics();
+
+        struct Statistics {
+            uint32_t draw_calls = 0;
+            uint32_t quad_count = 0;
+
+            uint32_t getTotalVertexCount() { return quad_count * 4; }
+            uint32_t getTotalIndexCount () { return quad_count * 6; }
+        };
+
+        static Statistics getStatics  ();
+
         static void drawQuad(
             const glm::vec3&      position, 
             const glm::vec2&      size,
@@ -22,5 +34,8 @@ namespace parrot {
             const glm::vec4&      color = glm::vec4(1.0),
             const glm::vec2&      texture_scale = glm::vec2(1.0)
         );
+    private:
+        static void startBatch();
+        static void endBatch();
     };
 }

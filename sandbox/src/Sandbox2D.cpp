@@ -20,6 +20,8 @@ void Sandbox2D::onUpdate(parrot::TimeStep time_step) {
         m_camera_controller.onUpdate(time_step);
     }
 
+    parrot::Renderer2D::resetStatics();
+
     {
         PROFILE_SCOPE("Renderer")
         parrot::RenderCommand::setClearColor(glm::vec4{ 0.3f, 0.3f, 0.3f, 1.0f });
@@ -33,8 +35,8 @@ void Sandbox2D::onUpdate(parrot::TimeStep time_step) {
         parrot::Renderer2D::drawQuad(glm::vec3{ 0.5f,  -0.5f,  0.0f }, glm::vec2{ 0.5f,  0.75f }, 45.0f, nullptr, glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
         parrot::Renderer2D::drawQuad(
             glm::vec3{ 0.0f, 0.0f, -0.1f },    // position
-            glm::vec2{ 10.0f, 10.0f },         // size
-            0.0f,                              // rotation
+            glm::vec2{ 15.0f, 15.0f },         // size
+            0,                                 // rotation
             m_checkerboard_texture,            // texture
             glm::vec4{1.0f, 1.0f, 1.0f, 1.0f}, // color
             glm::vec2(10.0f)                   // texture_scale
@@ -48,10 +50,35 @@ void Sandbox2D::onUpdate(parrot::TimeStep time_step) {
             glm::vec2(2.0f)                    // texture_scale
         );  
         parrot::Renderer2D::endScene();
+
+        parrot::Renderer2D::beginScene(m_camera_controller.getCamera());
+        for (float y = -5.0f; y < 5.0f; y += 0.5f) {
+            for (float x = -5.0f; x < 5.0f; x += 0.5f) {
+                glm::vec4 grad_color{ (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.7f };
+                parrot::Renderer2D::drawQuad(
+                    glm::vec3{ x, y, 0.0f },
+                    glm::vec2{ 0.45f, 0.45f },
+                    0,
+                    nullptr,
+                    grad_color,
+                    glm::vec2{ 1.0f, 1.0f }
+                );
+            }
+        }
+        parrot::Renderer2D::endScene();
     }
 }
 
 void Sandbox2D::onImGuiRender() {
+    ImGui::Begin("Statistics");
+
+    auto stats = parrot::Renderer2D::getStatics();
+
+    ImGui::Text("Renderer2D:");
+    ImGui::Text("Draw Calls: %d", stats.draw_calls);
+    ImGui::Text("Quad Count: %d", stats.quad_count);
+
+    ImGui::End();
 }
 
 void Sandbox2D::onEvent(parrot::Event& event) {

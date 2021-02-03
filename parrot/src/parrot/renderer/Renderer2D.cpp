@@ -10,16 +10,16 @@ namespace parrot {
         glm::vec3 position;
         glm::vec4 color;
         glm::vec2 tex_coord;
-        float     tex_index;
+        float     tex_index = 0;
         glm::vec2 tex_scale;
     };
 
     struct Renderer2Data {
-        const uint32_t max_quads_per_draw = 16384;
-        const uint32_t max_quad_vertices_per_draw = max_quads_per_draw * 4;
-        const uint32_t max_quad_indices_per_draw  = max_quads_per_draw * 6;
+        static constexpr uint32_t MAX_QUADS_PER_DRAW = 16384;
+        static constexpr uint32_t MAX_QUAD_VERTICES_PER_DRAW = MAX_QUADS_PER_DRAW * 4;
+        static constexpr uint32_t MAX_QUAD_INDICES_PER_DRAW  = MAX_QUADS_PER_DRAW * 6;
 
-        static const uint32_t s_max_texture_slots = 32;
+        static constexpr uint32_t MAX_TEXTURE_SLOTS = 32;
 
         Ref<VertexArray>  vertex_array;
         Ref<VertexBuffer> quad_vertex_buffer;
@@ -30,11 +30,12 @@ namespace parrot {
         QuadVertex* quad_vertices         = nullptr;
         QuadVertex* quad_vertices_pointer = nullptr;
 
-        std::array<Ref<Texture2D>, s_max_texture_slots> texture_slots;
-
+        std::array<Ref<Texture2D>, MAX_TEXTURE_SLOTS> texture_slots;
         uint32_t texture_slot_index = 1;
 
         glm::vec4 quad_vertex_positions[4];
+
+        Renderer2D::Statistics statistics;
     };
 
     static Renderer2Data s_data;
@@ -43,7 +44,7 @@ namespace parrot {
         // Vertex Array
         s_data.vertex_array = VertexArray::create();
 
-        s_data.quad_vertex_buffer = VertexBuffer::create(s_data.max_quad_vertices_per_draw * sizeof(QuadVertex));
+        s_data.quad_vertex_buffer = VertexBuffer::create(Renderer2Data::MAX_QUAD_VERTICES_PER_DRAW * sizeof(QuadVertex));
         s_data.quad_vertex_buffer->setLayout({
             { ShaderDataType::Float3, "a_position"  },
             { ShaderDataType::Float4, "a_color"     },
@@ -53,11 +54,11 @@ namespace parrot {
         });
         s_data.vertex_array->addVertexBuffer(s_data.quad_vertex_buffer);
 
-        s_data.quad_vertices = new QuadVertex[s_data.max_quad_vertices_per_draw];
+        s_data.quad_vertices = new QuadVertex[Renderer2Data::MAX_QUAD_VERTICES_PER_DRAW];
 
-        uint32_t* quad_indices = new uint32_t[s_data.max_quad_indices_per_draw];
+        uint32_t* quad_indices = new uint32_t[Renderer2Data::MAX_QUAD_INDICES_PER_DRAW];
         uint32_t offset = 0;
-        for (uint32_t i = 0; i < s_data.max_quad_indices_per_draw; i += 6) {
+        for (uint32_t i = 0; i < Renderer2Data::MAX_QUAD_INDICES_PER_DRAW; i += 6) {
             quad_indices[i + 0] = offset + 0;
             quad_indices[i + 1] = offset + 1;
             quad_indices[i + 2] = offset + 2;
@@ -69,7 +70,7 @@ namespace parrot {
         }
 
         Ref<IndexBuffer> index_buffer;
-        index_buffer = IndexBuffer::create(quad_indices, s_data.max_quad_indices_per_draw);
+        index_buffer = IndexBuffer::create(quad_indices, Renderer2Data::MAX_QUAD_INDICES_PER_DRAW);
         s_data.vertex_array->setIndexBuffer(index_buffer);
         delete[] quad_indices;
 
@@ -78,14 +79,14 @@ namespace parrot {
         s_data.white_texture->setData(&white_texture_data, sizeof(uint32_t));
         s_data.texture_slots[0] = s_data.white_texture;
 
-        int32_t texture_samplers[s_data.s_max_texture_slots];
-        for (int i = 0; i < s_data.s_max_texture_slots; ++i) {
+        int32_t texture_samplers[Renderer2Data::MAX_TEXTURE_SLOTS];
+        for (int i = 0; i < Renderer2Data::MAX_TEXTURE_SLOTS; ++i) {
             texture_samplers[i] = i;
         }
 
         s_data.quad_texture_shader = Shader::create("asset/shader/texture_shader.glsl"   );
         s_data.quad_texture_shader->bind();
-        s_data.quad_texture_shader->setIntArray("u_textures", texture_samplers, s_data.s_max_texture_slots);
+        s_data.quad_texture_shader->setIntArray("u_textures", texture_samplers, Renderer2Data::MAX_TEXTURE_SLOTS);
 
         s_data.quad_vertex_positions[0] = glm::vec4{ -0.5f, -0.5f, 0.0f, 1.0f };
         s_data.quad_vertex_positions[1] = glm::vec4{  0.5f, -0.5f, 0.0f, 1.0f };
@@ -100,15 +101,24 @@ namespace parrot {
         s_data.quad_texture_shader->bind();
         s_data.quad_texture_shader->setMat4("u_view_projection", camera.getViewPorjectionMatrix());
 
+        startBatch();
+    }
+
+
+    void Renderer2D::endScene() {
+        endBatch();
+        flush();
+    }
+
+    void Renderer2D::startBatch() {
         s_data.quad_index_count = 0;
         s_data.quad_vertices_pointer = s_data.quad_vertices;
         s_data.texture_slot_index = 1;
     }
 
-    void Renderer2D::endScene() {
+    void Renderer2D::endBatch() {
         uint32_t data_size = (uint8_t*)s_data.quad_vertices_pointer - (uint8_t*)s_data.quad_vertices;
         s_data.quad_vertex_buffer->setData(s_data.quad_vertices, data_size);
-        flush();
     }
 
     void Renderer2D::flush(){
@@ -117,6 +127,15 @@ namespace parrot {
         }
             
         RenderCommand::drawIndexed(s_data.vertex_array, s_data.quad_index_count);
+        ++s_data.statistics.draw_calls;
+    }
+
+    void Renderer2D::resetStatics() {
+        memset(&s_data.statistics, 0, sizeof(Statistics));
+    }
+
+    Renderer2D::Statistics Renderer2D::getStatics() {
+        return s_data.statistics;
     }
 
     void Renderer2D::drawQuad(
@@ -127,6 +146,13 @@ namespace parrot {
         const glm::vec4&      color, 
         const glm::vec2&      texture_scale
     ) {
+
+        if (s_data.quad_index_count >= Renderer2Data::MAX_QUAD_INDICES_PER_DRAW) {
+            endBatch();
+            flush();
+            startBatch();
+        }
+
         float texture_index = 0.0f;
 
         if (texture) {
@@ -192,5 +218,7 @@ namespace parrot {
 
         s_data.quad_index_count +=6;
 
+        ++s_data.statistics.quad_count;
     }
+
 }
