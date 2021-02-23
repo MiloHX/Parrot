@@ -46,19 +46,22 @@ namespace parrot {
         dispatcher.dispatch<WindowResizedEvent>(PR_BIND_EVENT_FUNC(OrthographicCameraController::onWindowResized));
     }
 
+    void OrthographicCameraController::calculateView() {
+        m_camera_bounds = { -m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level };
+        m_camera.setProjection(m_camera_bounds.left, m_camera_bounds.right, m_camera_bounds.bottom, m_camera_bounds.top);
+    }
+
     bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent& event) {
 
         m_zoom_level -= event.getOffsetY() * 0.5f;
         m_zoom_level = glm::clamp(m_zoom_level, 0.25f, 10.0f);
-        m_camera_bounds = { -m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level };
-        m_camera.setProjection(m_camera_bounds.left, m_camera_bounds.right, m_camera_bounds.bottom, m_camera_bounds.top);
+        calculateView();
         return false;
     }
 
     bool OrthographicCameraController::onWindowResized(WindowResizedEvent& event) {
         m_aspect_ratio = static_cast<float>(event.getWidth()) / static_cast<float>(event.getHeight());
-        m_camera_bounds = { -m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level };
-        m_camera.setProjection(m_camera_bounds.left, m_camera_bounds.right, m_camera_bounds.bottom, m_camera_bounds.top);
+        calculateView();
         return false;
     }
 

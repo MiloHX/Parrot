@@ -26,4 +26,8 @@ private:
 
     ParticleSystem m_particle_system;
     ParticleProps  m_particle;
+
+    uint32_t m_map_width;
+    uint32_t m_map_height;
+    std::unordered_map<char, parrot::Ref<parrot::SubTexture2D>> s_textre_map;
 };

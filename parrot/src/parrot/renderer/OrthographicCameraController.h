@@ -30,10 +30,17 @@ namespace parrot {
         const OrthographicCamera&      getCamera() const { return m_camera; }
         const OrthographicCameraBounds getBounds()       { return m_camera_bounds; }
 
+        float getZoomLevel() const { return m_zoom_level; }
+        void  setZoomLevel(float level) {
+            m_zoom_level = level;
+            calculateView();
+        }
+
         void onUpdate(TimeStep time_step);
         void onEvent (Event& event);
 
     private:
+        void calculateView();
         bool onMouseScrolled(MouseScrolledEvent& event);
         bool onWindowResized(WindowResizedEvent& event);
 
