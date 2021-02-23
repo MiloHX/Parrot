@@ -37,6 +37,10 @@ namespace parrot {
         overlay->onAttach();
     }
 
+    void Application::exit() {
+        m_running = false;
+    }
+
     void Application::run() {
 
         while (m_running) {
@@ -74,7 +78,7 @@ namespace parrot {
     }
 
     bool Application::onWindowClose(WindowCloseEvent& event) {
-        m_running = false;
+        exit();
         return true;
     }
 

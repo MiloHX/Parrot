@@ -23,6 +23,8 @@ namespace parrot {
 
         inline Window& getWindow() { return *m_window;  }
 
+        void exit();
+
         inline static Application& get() { return *s_instance; }
     private:
         bool onWindowClose  (WindowCloseEvent  & event);

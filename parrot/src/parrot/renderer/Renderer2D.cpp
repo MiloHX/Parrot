@@ -96,6 +96,7 @@ namespace parrot {
     }
 
     void Renderer2D::shutdown() {
+        delete[] s_data.quad_vertices;
     }
 
     void Renderer2D::beginScene(const OrthographicCamera camera) {

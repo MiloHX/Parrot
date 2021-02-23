@@ -173,6 +173,65 @@ void Sandbox2D::onUpdate(parrot::TimeStep time_step) {
 }
 
 void Sandbox2D::onImGuiRender() {
+
+    // Docking
+    static bool dockspace_open = true;
+    static bool opt_fullscreen_persistant = true;
+    bool opt_fullscreen = opt_fullscreen_persistant;
+    static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+
+    if (opt_fullscreen) {
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImGui::SetNextWindowPos     (viewport->Pos );
+        ImGui::SetNextWindowSize    (viewport->Size);
+        ImGui::SetNextWindowViewport(viewport->ID  );
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding  , 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+        window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+        window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+    }
+
+    if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) {
+        window_flags |= ImGuiWindowFlags_NoBackground;
+    }
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+    ImGui::Begin("Parrot", &dockspace_open, window_flags);
+    ImGui::PopStyleVar();
+
+    if (opt_fullscreen) {
+        ImGui::PopStyleVar(2);
+    }
+
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) {
+        ImGuiID dockspace_id = ImGui::GetID("Parrot");
+        ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+    }
+
+    if (ImGui::BeginMenuBar()) {
+        if (ImGui::BeginMenu("FILE")) {
+
+            if (ImGui::MenuItem("Test Item 1 (NoSplit)", "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0))
+                dockspace_flags ^= ImGuiDockNodeFlags_NoSplit;
+            if (ImGui::MenuItem("Test Item 2 (NoResize)", "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0))
+                dockspace_flags ^= ImGuiDockNodeFlags_NoResize;
+
+            ImGui::Separator();
+            if (ImGui::MenuItem("Exit", NULL, false)) {
+                dockspace_open = false;
+                parrot::Application::get().exit();
+            }
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMenuBar();
+    }
+
+    // Dockable Windows Need to put here:
+
     ImGui::Begin("Statistics");
 
     auto stats = parrot::Renderer2D::getStatics();
@@ -180,7 +239,11 @@ void Sandbox2D::onImGuiRender() {
     ImGui::Text("Renderer2D:");
     ImGui::Text("Draw Calls: %d", stats.draw_calls);
     ImGui::Text("Quad Count: %d", stats.quad_count);
+    uint32_t texture_id = m_checkerboard_texture->getRendererID();
+    ImGui::Image((void*)texture_id, ImVec2(128, 128));
+    ImGui::End();
 
+    // Dockable Windows End
     ImGui::End();
 }
 
