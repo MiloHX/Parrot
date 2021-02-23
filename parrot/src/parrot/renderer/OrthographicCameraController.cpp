@@ -5,8 +5,11 @@
 
 namespace parrot {
 
-    OrthographicCameraController::OrthographicCameraController(float aspect_ratio, bool rotation) 
-    : m_aspect_ratio(aspect_ratio), m_rotation(rotation), m_camera(-m_aspect_ratio * m_zoom_level, m_aspect_ratio *m_zoom_level, -m_zoom_level, m_zoom_level) {
+    OrthographicCameraController::OrthographicCameraController(float aspect_ratio, bool rotation) : 
+        m_aspect_ratio (aspect_ratio), 
+        m_rotation     (rotation), 
+        m_camera_bounds({ -m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level }),
+        m_camera       (m_camera_bounds.left, m_camera_bounds.right, m_camera_bounds.bottom, m_camera_bounds.top) {
     }
 
     void OrthographicCameraController::onUpdate(TimeStep time_step) {
@@ -47,13 +50,15 @@ namespace parrot {
 
         m_zoom_level -= event.getOffsetY() * 0.5f;
         m_zoom_level = glm::clamp(m_zoom_level, 0.25f, 10.0f);
-        m_camera.setProjection(-m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level);
+        m_camera_bounds = { -m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level };
+        m_camera.setProjection(m_camera_bounds.left, m_camera_bounds.right, m_camera_bounds.bottom, m_camera_bounds.top);
         return false;
     }
 
     bool OrthographicCameraController::onWindowResized(WindowResizedEvent& event) {
         m_aspect_ratio = static_cast<float>(event.getWidth()) / static_cast<float>(event.getHeight());
-        m_camera.setProjection(-m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level);
+        m_camera_bounds = { -m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level };
+        m_camera.setProjection(m_camera_bounds.left, m_camera_bounds.right, m_camera_bounds.bottom, m_camera_bounds.top);
         return false;
     }
 

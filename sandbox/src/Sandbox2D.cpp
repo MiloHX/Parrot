@@ -1,4 +1,5 @@
 #include "Sandbox2D.h"
+
 #include <imgui.h>
 
 Sandbox2D::Sandbox2D() : Layer("Sandbox2D"),  m_camera_controller(1920.0f / 1080.0f, true) {
@@ -6,6 +7,17 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"),  m_camera_controller(1920.0f / 1080
 
 void Sandbox2D::onAttach() {
     m_checkerboard_texture = parrot::Texture2D::create("asset/texture/Checkerboard.png");
+    m_sprite_sheet         = parrot::Texture2D::create("asset/game/texture/RPGpack_sheet_2X.png");
+
+    m_particle.color_begin        = glm::vec4{ 1.0f, 1.0f, 0.0f, 1.0f };
+    m_particle.color_begin        = glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f };
+    m_particle.size_begin         = 0.5f;
+    m_particle.size_end           = 0.0f;
+    m_particle.size_variation     = 0.3f;
+    m_particle.life_time          = 1.0f;
+    m_particle.velocity           = glm::vec2{ 0.0f, 0.0f };
+    m_particle.volocity_variation = glm::vec2{ 3.0f, 1.0f };
+    m_particle.position           = glm::vec3{ 0.0f, 0.0f, 0.0f };
 }
 
 void Sandbox2D::onDetach() {
@@ -27,6 +39,7 @@ void Sandbox2D::onUpdate(parrot::TimeStep time_step) {
         parrot::RenderCommand::setClearColor(glm::vec4{ 0.3f, 0.3f, 0.3f, 1.0f });
         parrot::RenderCommand::clear();
 
+    #if 0
         static float animated_rotation = 0.0f;
         animated_rotation += 1; // TODO: For some reason I cannot multiply this with time_step. 
 
@@ -66,6 +79,37 @@ void Sandbox2D::onUpdate(parrot::TimeStep time_step) {
             }
         }
         parrot::Renderer2D::endScene();
+    #endif
+
+        if (parrot::Input::isMouseButtonPressed(PR_MOUSE_BUTTON_LEFT)) {
+            auto [x, y] = parrot::Input::getMousePosition();
+            auto width  = parrot::Application::get().getWindow().getWidth ();
+            auto height = parrot::Application::get().getWindow().getHeight();
+
+            auto bounds   = m_camera_controller.getBounds();
+            auto position = glm::vec3{ m_camera_controller.getCamera().getPosition().x,m_camera_controller.getCamera().getPosition().y, 0.1f };
+            x = (x / width) * bounds.getWidth() - bounds.getWidth() * 0.5f;
+            y = bounds.getHeight() * 0.5f - (y / height) * bounds.getHeight();
+            m_particle.position = glm::vec3{ x + position.x, y + position.y, position.z};
+            for (int i = 0; i < 5; ++i) {
+                m_particle_system.emit(m_particle);
+            }
+        }
+
+        parrot::Renderer2D::beginScene(m_camera_controller.getCamera());
+
+        parrot::Renderer2D::drawQuad(
+            glm::vec3{ 0.0f, 0.0f, 0.0f },     // position
+            glm::vec2{ 1.0f, 1.0f },           // size
+            0,                                 // rotation
+            m_sprite_sheet                     // texture
+        );
+
+        parrot::Renderer2D::endScene();
+
+        m_particle_system.onUpdate(time_step);
+        m_particle_system.onRender(m_camera_controller.getCamera());
+
     }
 }
 
