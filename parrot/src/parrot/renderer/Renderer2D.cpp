@@ -17,7 +17,7 @@ namespace parrot {
     struct Renderer2Data {
         static constexpr uint32_t MAX_QUADS_PER_DRAW = 16384;
         static constexpr uint32_t MAX_QUAD_VERTICES_PER_DRAW = MAX_QUADS_PER_DRAW * 4;
-        static constexpr uint32_t MAX_QUAD_INDICES_PER_DRAW  = MAX_QUADS_PER_DRAW * 6;
+        static constexpr uint32_t MAX_QUAD_INDICES_PER_DRAW = MAX_QUADS_PER_DRAW * 6;
 
         static constexpr uint32_t MAX_TEXTURE_SLOTS = 32;
 
@@ -26,8 +26,8 @@ namespace parrot {
         Ref<Shader>       quad_texture_shader;
         Ref<Texture2D>    white_texture;
 
-        uint32_t    quad_index_count      = 0;
-        QuadVertex* quad_vertices         = nullptr;
+        uint32_t    quad_index_count = 0;
+        QuadVertex* quad_vertices = nullptr;
         QuadVertex* quad_vertices_pointer = nullptr;
 
         std::array<Ref<Texture2D>, MAX_TEXTURE_SLOTS> texture_slots;
@@ -41,6 +41,7 @@ namespace parrot {
     static Renderer2Data s_data;
 
     void Renderer2D::init() {
+
         // Vertex Array
         s_data.vertex_array = VertexArray::create();
 
@@ -84,14 +85,14 @@ namespace parrot {
             texture_samplers[i] = i;
         }
 
-        s_data.quad_texture_shader = Shader::create("asset/shader/texture_shader.glsl"   );
+        s_data.quad_texture_shader = Shader::create("asset/shader/texture_shader.glsl");
         s_data.quad_texture_shader->bind();
         s_data.quad_texture_shader->setIntArray("u_textures", texture_samplers, Renderer2Data::MAX_TEXTURE_SLOTS);
 
-        s_data.quad_vertex_positions[0] = glm::vec4{ -0.5f, -0.5f, 0.0f, 1.0f };
-        s_data.quad_vertex_positions[1] = glm::vec4{  0.5f, -0.5f, 0.0f, 1.0f };
-        s_data.quad_vertex_positions[2] = glm::vec4{  0.5f,  0.5f, 0.0f, 1.0f };
-        s_data.quad_vertex_positions[3] = glm::vec4{ -0.5f,  0.5f, 0.0f, 1.0f };
+        s_data.quad_vertex_positions[0] = glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f);
+        s_data.quad_vertex_positions[1] = glm::vec4( 0.5f, -0.5f, 0.0f, 1.0f);
+        s_data.quad_vertex_positions[2] = glm::vec4( 0.5f,  0.5f, 0.0f, 1.0f);
+        s_data.quad_vertex_positions[3] = glm::vec4(-0.5f,  0.5f, 0.0f, 1.0f);
     }
 
     void Renderer2D::shutdown() {
@@ -146,6 +147,12 @@ namespace parrot {
         const glm::vec4&      color, 
         const glm::vec2&      texture_scale
     ) {
+        constexpr std::pair<float, float> fixed_texture_coords[4] = { 
+            { 0.0f, 0.0f }, 
+            { 1.0f, 0.0f }, 
+            { 1.0f, 1.0f }, 
+            { 0.0f, 1.0f } 
+        };
 
         if (s_data.quad_index_count >= Renderer2Data::MAX_QUAD_INDICES_PER_DRAW) {
             endBatch();
@@ -173,52 +180,98 @@ namespace parrot {
         if (rotation) {
             if (size.x != 1.0f || size.y != 1.0f) {
                 transform = glm::translate(glm::mat4(1.0f), position)
-                                    * glm::rotate   (glm::mat4(1.0f), rotation, glm::vec3(0.0f, 0.0f, 1.0f))
-                                    * glm::scale    (glm::mat4(1.0f), glm::vec3{ size.x, size.y, 1.0f });
+                          * glm::rotate   (glm::mat4(1.0f), rotation, glm::vec3(0.0f, 0.0f, 1.0f))
+                          * glm::scale    (glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
             } else {
                 transform = glm::translate(glm::mat4(1.0f), position)
-                          * glm::scale    (glm::mat4(1.0f), glm::vec3{ size.x, size.y, 1.0f });
+                          * glm::scale    (glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
             }
         } else {
             if (size.x != 1.0f || size.y != 1.0f) {
                 transform = glm::translate(glm::mat4(1.0f), position)
-                          * glm::scale    (glm::mat4(1.0f), glm::vec3{ size.x, size.y, 1.0f });
+                          * glm::scale    (glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
             } else {
                 transform = glm::translate(glm::mat4(1.0f), position);
             }
-        } 
+        }
 
-        s_data.quad_vertices_pointer->position  = glm::vec3(transform * s_data.quad_vertex_positions[0]);
-        s_data.quad_vertices_pointer->color     = color;
-        s_data.quad_vertices_pointer->tex_coord = glm::vec2{ 0.0f, 0.0f };
-        s_data.quad_vertices_pointer->tex_index = texture_index;
-        s_data.quad_vertices_pointer->tex_scale = texture_scale;
-        s_data.quad_vertices_pointer++;
-
-        s_data.quad_vertices_pointer->position  = glm::vec3(transform * s_data.quad_vertex_positions[1]);
-        s_data.quad_vertices_pointer->color     = color;
-        s_data.quad_vertices_pointer->tex_coord = glm::vec2{ 1.0f, 0.0f };
-        s_data.quad_vertices_pointer->tex_index = texture_index;
-        s_data.quad_vertices_pointer->tex_scale = texture_scale;
-        s_data.quad_vertices_pointer++;
-
-        s_data.quad_vertices_pointer->position  = glm::vec3(transform * s_data.quad_vertex_positions[2]);
-        s_data.quad_vertices_pointer->color     = color;
-        s_data.quad_vertices_pointer->tex_coord = glm::vec2{ 1.0f, 1.0f };
-        s_data.quad_vertices_pointer->tex_index = texture_index;
-        s_data.quad_vertices_pointer->tex_scale = texture_scale;
-        s_data.quad_vertices_pointer++;
-
-        s_data.quad_vertices_pointer->position  = glm::vec3(transform * s_data.quad_vertex_positions[3]);
-        s_data.quad_vertices_pointer->color     = color;
-        s_data.quad_vertices_pointer->tex_coord = glm::vec2{ 0.0f, 1.0f };
-        s_data.quad_vertices_pointer->tex_index = texture_index;
-        s_data.quad_vertices_pointer->tex_scale = texture_scale;
-        s_data.quad_vertices_pointer++;
+        for (int i = 0; i < 4; ++i) {
+            s_data.quad_vertices_pointer->position  = glm::vec3(transform * s_data.quad_vertex_positions[i]);
+            s_data.quad_vertices_pointer->color     = color;
+            s_data.quad_vertices_pointer->tex_coord = glm::vec2(fixed_texture_coords[i].first, fixed_texture_coords[i].second);
+            s_data.quad_vertices_pointer->tex_index = texture_index;
+            s_data.quad_vertices_pointer->tex_scale = texture_scale;
+            s_data.quad_vertices_pointer++;
+        }
 
         s_data.quad_index_count +=6;
 
         ++s_data.statistics.quad_count;
     }
 
+
+    void Renderer2D::drawSubTexture(
+        const glm::vec3&         position, 
+        const glm::vec2&         size, 
+        float                    rotation, 
+        const Ref<SubTexture2D>& sub_texture, 
+        const glm::vec4&         color, 
+        const glm::vec2&         texture_scale
+    ) {
+        // std::pair<float, float> texture_coords[4] = 
+        const glm::vec2*     texture_coords = sub_texture->getTexCoordList();
+        const Ref<Texture2D> texture        = sub_texture->getTexture();
+
+        if (s_data.quad_index_count >= Renderer2Data::MAX_QUAD_INDICES_PER_DRAW) {
+            endBatch();
+            flush();
+            startBatch();
+        }
+
+        float texture_index = 0.0f;
+
+        for (int i = 1; i < s_data.texture_slot_index; i++) {
+            if (*s_data.texture_slots[i].get() == *texture.get()) {
+                texture_index = static_cast<float>(i);
+                break;
+            }
+        }
+        if (texture_index == 0.0f) {
+            texture_index = (float)s_data.texture_slot_index;
+            s_data.texture_slots[texture_index] = texture;
+            ++s_data.texture_slot_index;
+        }
+
+        glm::mat4 transform;
+        if (rotation) {
+            if (size.x != 1.0f || size.y != 1.0f) {
+                transform = glm::translate(glm::mat4(1.0f), position)
+                    * glm::rotate   (glm::mat4(1.0f), rotation, glm::vec3(0.0f, 0.0f, 1.0f))
+                    * glm::scale    (glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
+            } else {
+                transform = glm::translate(glm::mat4(1.0f), position)
+                    * glm::scale    (glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
+            }
+        } else {
+            if (size.x != 1.0f || size.y != 1.0f) {
+                transform = glm::translate(glm::mat4(1.0f), position)
+                    * glm::scale    (glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
+            } else {
+                transform = glm::translate(glm::mat4(1.0f), position);
+            }
+        }
+
+        for (int i = 0; i < 4; ++i) {
+            s_data.quad_vertices_pointer->position  = glm::vec3(transform * s_data.quad_vertex_positions[i]);
+            s_data.quad_vertices_pointer->color     = color;
+            s_data.quad_vertices_pointer->tex_coord = texture_coords[i];
+            s_data.quad_vertices_pointer->tex_index = texture_index;
+            s_data.quad_vertices_pointer->tex_scale = texture_scale;
+            s_data.quad_vertices_pointer++;
+        }
+
+        s_data.quad_index_count +=6;
+
+        ++s_data.statistics.quad_count;
+    }
 }

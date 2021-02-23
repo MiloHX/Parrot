@@ -2,6 +2,7 @@
 
 #include "parrot/renderer/OrthographicCamera.h"
 #include "parrot/renderer/Texture.h"
+#include "parrot/renderer/SubTexture2D.h"
 
 namespace parrot {
 
@@ -14,7 +15,7 @@ namespace parrot {
         static void endScene();
         static void flush();
 
-        static void       resetStatics();
+        static void resetStatics();
 
         struct Statistics {
             uint32_t draw_calls = 0;
@@ -31,8 +32,17 @@ namespace parrot {
             const glm::vec2&      size,
             float                 rotation,
             const Ref<Texture2D>& texture, 
-            const glm::vec4&      color = glm::vec4(1.0),
+            const glm::vec4&      color         = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
             const glm::vec2&      texture_scale = glm::vec2(1.0)
+        );
+
+        static void drawSubTexture(
+            const glm::vec3&         position, 
+            const glm::vec2&         size,
+            float                    rotation,
+            const Ref<SubTexture2D>& sub_texture, 
+            const glm::vec4&         color         = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+            const glm::vec2&         texture_scale = glm::vec2(1.0)
         );
     private:
         static void startBatch();
