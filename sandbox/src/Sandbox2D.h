@@ -23,8 +23,6 @@ private:
     parrot::Ref<parrot::SubTexture2D>    m_sprite_barrel;
     parrot::Ref<parrot::SubTexture2D>    m_sprite_tree;
 
-    parrot::Ref<parrot::FrameBuffer>     m_frame_buffer;
-
     ParticleSystem m_particle_system;
     ParticleProps  m_particle;
 

@@ -98,6 +98,56 @@ project "parrot"
         optimize "on"
 
 
+-- Editor Project Definition --
+
+project "editor"
+    location "editor"
+    kind "ConsoleApp"
+    language "C++"
+    cppdialect "C++17"
+    staticruntime "on"
+
+    targetdir ("bin/" .. output_dir .. "/%{prj.name}")
+    objdir ("bin-int/" .. output_dir .. "/%{prj.name}")
+
+    files {
+        "%{prj.name}/src/**.h",
+        "%{prj.name}/src/**.cpp",
+        "%{prj.name}/asset/**.*"
+    }
+
+    includedirs {
+        "parrot/vendor/spdlog/include",
+        "parrot/src",
+        "%{include_dir.glm}",
+        "%{include_dir.imgui}"
+    }
+
+    links {
+        "Parrot"
+    }
+
+    filter "system:windows"
+        systemversion "latest"
+        defines {
+            "PR_PLATFORM_WINDOWS"
+        }
+
+    filter "configurations:Debug"
+        defines "PR_DEBUG"
+        runtime "Debug"
+        symbols "on"
+
+    filter "configurations:Release"
+        defines "PR_RELEASE"
+        runtime "Release"
+        optimize "on"
+
+    filter "configurations:Dist"
+        defines "PR_DIST"
+        runtime "Release"
+        optimize "on"
+
 -- Sandbox Project Definition --
 
 project "sandbox"
@@ -147,5 +197,4 @@ project "sandbox"
         defines "PR_DIST"
         runtime "Release"
         optimize "on"
-
 

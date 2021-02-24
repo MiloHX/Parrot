@@ -12,7 +12,7 @@ namespace parrot {
 
     class Application {
     public:
-        Application();
+        Application(const std::string& name = "Parrot");
         virtual ~Application();
 
         void run();

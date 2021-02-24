@@ -10,12 +10,12 @@ namespace parrot {
     // Init Singleton
     Application* Application::s_instance = nullptr;
 
-    Application::Application() {
+    Application::Application(const std::string& name) {
         PR_CORE_ASSERT(!s_instance, "Application already exist!")
         s_instance = this;
 
         // Window Creation & Adding imgui layer
-        m_window = Ref<Window>(Window::create());
+        m_window = Ref<Window>(Window::create(WindowProps(name)));
         m_window->setEventCallBack(PR_BIND_EVENT_FUNC(Application::onEvent));
 
         Renderer::init();
