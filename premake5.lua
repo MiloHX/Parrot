@@ -9,7 +9,7 @@ workspace "Parrot"
         "Dist"
     }
 
-    startproject "sandbox"
+    startproject "editor"
 
 output_dir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 

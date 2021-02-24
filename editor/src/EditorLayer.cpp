@@ -114,16 +114,28 @@ namespace parrot {
 
         // Dockable Windows Need to put here:
 
+        // Statistics
         ImGui::Begin("Statistics");
-
         auto stats = parrot::Renderer2D::getStatics();
-
         ImGui::Text("Renderer2D:");
         ImGui::Text("Draw Calls: %d", stats.draw_calls);
         ImGui::Text("Quad Count: %d", stats.quad_count);
-        uint32_t texture_id = m_frame_buffer->getColorAttachmentRendererID();
-        ImGui::Image((void*)texture_id, ImVec2(640, 360), ImVec2(0, 1), ImVec2(1, 0));
         ImGui::End();
+
+        // Viewport
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+        ImGui::Begin("Viewport");
+        ImVec2 viewport_panel_size = ImGui::GetContentRegionAvail();
+        if (m_viewport_size.x != viewport_panel_size.x || m_viewport_size.y != viewport_panel_size.y) {
+            m_viewport_size = glm::vec2(viewport_panel_size.x, viewport_panel_size.y);
+            m_frame_buffer->resize(static_cast<uint32_t>(m_viewport_size.x), static_cast<uint32_t>(m_viewport_size.y));
+
+            m_camera_controller.onResize(m_viewport_size.x, m_viewport_size.y);
+        }
+        uint32_t texture_id = m_frame_buffer->getColorAttachmentRendererID();
+        ImGui::Image((void*)texture_id, ImVec2(m_viewport_size.x, m_viewport_size.y), ImVec2(0, 1), ImVec2(1, 0));
+        ImGui::End();
+        ImGui::PopStyleVar();
 
         // Dockable Windows End
         ImGui::End();

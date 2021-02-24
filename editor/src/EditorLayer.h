@@ -21,5 +21,6 @@ namespace parrot {
         Ref<Texture2D>               m_checkerboard_texture;
         Ref<FrameBuffer>             m_frame_buffer;
 
+        glm::vec2                    m_viewport_size = glm::vec2(0, 0);
     };
 }

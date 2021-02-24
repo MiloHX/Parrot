@@ -9,6 +9,8 @@ namespace parrot {
 
     class RendererAPI {
     public:
+        virtual ~RendererAPI() = default;
+
         enum class API {
             None   = 0,
             OpenGL = 1

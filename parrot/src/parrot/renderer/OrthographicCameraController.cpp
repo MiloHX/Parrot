@@ -46,6 +46,11 @@ namespace parrot {
         dispatcher.dispatch<WindowResizedEvent>(PR_BIND_EVENT_FUNC(OrthographicCameraController::onWindowResized));
     }
 
+    void OrthographicCameraController::onResize(float width, float height) {
+        m_aspect_ratio = width / height;
+        calculateView();
+    }
+
     void OrthographicCameraController::calculateView() {
         m_camera_bounds = { -m_aspect_ratio * m_zoom_level, m_aspect_ratio * m_zoom_level, -m_zoom_level, m_zoom_level };
         m_camera.setProjection(m_camera_bounds.left, m_camera_bounds.right, m_camera_bounds.bottom, m_camera_bounds.top);
@@ -60,8 +65,7 @@ namespace parrot {
     }
 
     bool OrthographicCameraController::onWindowResized(WindowResizedEvent& event) {
-        m_aspect_ratio = static_cast<float>(event.getWidth()) / static_cast<float>(event.getHeight());
-        calculateView();
+        onResize(static_cast<float>(event.getWidth()), static_cast<float>(event.getHeight()));
         return false;
     }
 

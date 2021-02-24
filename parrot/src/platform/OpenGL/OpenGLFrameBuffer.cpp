@@ -12,9 +12,17 @@ namespace parrot {
 
     OpenGLFrameBuffer::~OpenGLFrameBuffer() {
         glDeleteFramebuffers(1, &m_renderer_ID);
+        glDeleteTextures(1, &m_color_attachment);
+        glDeleteTextures(1, &m_depth_attachment);
     }
 
     void OpenGLFrameBuffer::invalidate() {
+        if (m_renderer_ID) {
+            glDeleteFramebuffers(1, &m_renderer_ID);
+            glDeleteTextures(1, &m_color_attachment);
+            glDeleteTextures(1, &m_depth_attachment);
+        }
+
         glCreateFramebuffers(1, &m_renderer_ID);
         glBindFramebuffer(GL_FRAMEBUFFER, m_renderer_ID);
 
@@ -37,9 +45,16 @@ namespace parrot {
 
     void OpenGLFrameBuffer::bind() {
         glBindFramebuffer(GL_FRAMEBUFFER, m_renderer_ID);
+        glViewport(0, 0, m_frame_buffer_props.width, m_frame_buffer_props.height);
     }
 
     void OpenGLFrameBuffer::unbind() {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    void OpenGLFrameBuffer::resize(uint32_t width, uint32_t height) {
+        m_frame_buffer_props.width  = width ;
+        m_frame_buffer_props.height = height;
+        invalidate();
     }
 }

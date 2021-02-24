@@ -31,6 +31,7 @@ namespace parrot {
     class Event {
         friend class EventDispatcher;
     public:
+        virtual ~Event() = default;
         // Must be implmeneted
         virtual EventType   getEventType()    const = 0;
         virtual const char* getName()         const = 0;

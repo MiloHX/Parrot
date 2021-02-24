@@ -38,6 +38,7 @@ namespace parrot {
 
         void onUpdate(TimeStep time_step);
         void onEvent (Event& event);
+        void onResize(float width, float height);
 
     private:
         void calculateView();
