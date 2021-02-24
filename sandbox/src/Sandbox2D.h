@@ -22,12 +22,13 @@ private:
     parrot::Ref<parrot::SubTexture2D>    m_sprite_stair;
     parrot::Ref<parrot::SubTexture2D>    m_sprite_barrel;
     parrot::Ref<parrot::SubTexture2D>    m_sprite_tree;
-    glm::vec4                            m_color = glm::vec4{ 0.2f, 0.3f, 0.8f, 1.0f };
+
+    parrot::Ref<parrot::FrameBuffer>     m_frame_buffer;
 
     ParticleSystem m_particle_system;
     ParticleProps  m_particle;
 
-    uint32_t m_map_width;
+    uint32_t m_map_width ;
     uint32_t m_map_height;
     std::unordered_map<char, parrot::Ref<parrot::SubTexture2D>> s_textre_map;
 };

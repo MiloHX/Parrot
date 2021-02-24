@@ -35,10 +35,13 @@ namespace parrot {
         } else if (channels == 3) {
             m_internal_format = GL_RGB8;
             m_data_format     = GL_RGB;
+        } else {
+            m_internal_format = GL_INVALID_ENUM;
+            m_data_format     = GL_INVALID_ENUM;
         }
         
 
-        PR_CORE_ASSERT(m_internal_format & m_data_format, "Texture format not supported");
+        PR_CORE_ASSERT(m_internal_format != GL_INVALID_ENUM && m_data_format != GL_INVALID_ENUM, "Texture format not supported");
 
         glCreateTextures(GL_TEXTURE_2D, 1, &m_renderer_id);
         glTextureStorage2D(m_renderer_id, 1, m_internal_format, m_width, m_height);

@@ -15,6 +15,7 @@ namespace parrot {
         virtual uint32_t getRendererID() const override { return m_renderer_id; }
         virtual uint32_t getWidth     () const override { return m_width      ; }
         virtual uint32_t getHeight    () const override { return m_height     ; }
+
         virtual void     bind     (uint32_t slot) const       override; 
         virtual void     setData  (void* data, uint32_t size) override;
 

@@ -20,7 +20,7 @@ static const char* s_map_tiles =
     "WWWWWWWWWWWWWWWWWWWWWWWW"
 ;
 
-Sandbox2D::Sandbox2D() : Layer("Sandbox2D"),  m_camera_controller(1920.0f / 1080.0f, true) {
+Sandbox2D::Sandbox2D() : Layer("Sandbox2D"),  m_camera_controller(1920.0f / 1080.0f, true), m_map_width(0), m_map_height(0) {
 }
 
 void Sandbox2D::onAttach() {
@@ -46,6 +46,11 @@ void Sandbox2D::onAttach() {
     m_particle.position           = glm::vec3{ 0.0f, 0.0f, 0.0f };
 
     m_camera_controller.setZoomLevel(3.0f);
+
+    parrot::FrameBufferProps frame_buffer_props;
+    frame_buffer_props.width  = 1280;
+    frame_buffer_props.height = 720;
+    m_frame_buffer = parrot::FrameBuffer::create(frame_buffer_props);
 }
 
 void Sandbox2D::onDetach() {
@@ -64,6 +69,7 @@ void Sandbox2D::onUpdate(parrot::TimeStep time_step) {
 
     {
         PROFILE_SCOPE("Renderer")
+        m_frame_buffer->bind();
         parrot::RenderCommand::setClearColor(glm::vec4{ 0.3f, 0.3f, 0.3f, 1.0f });
         parrot::RenderCommand::clear();
 
@@ -108,6 +114,8 @@ void Sandbox2D::onUpdate(parrot::TimeStep time_step) {
         parrot::Renderer2D::endScene();
         #endif
 
+
+        #if 0
         if (parrot::Input::isMouseButtonPressed(PR_MOUSE_BUTTON_LEFT)) {
             auto [x, y] = parrot::Input::getMousePosition();
             auto width  = parrot::Application::get().getWindow().getWidth ();
@@ -125,7 +133,10 @@ void Sandbox2D::onUpdate(parrot::TimeStep time_step) {
 
         m_particle_system.onUpdate(time_step);
         m_particle_system.onRender(m_camera_controller.getCamera());
+        #endif
 
+
+        #if 1
         parrot::Renderer2D::beginScene(m_camera_controller.getCamera());
 
         for (uint32_t y = 0; y < m_map_height; ++y) {
@@ -146,34 +157,17 @@ void Sandbox2D::onUpdate(parrot::TimeStep time_step) {
             }
         }
 
-        //parrot::Renderer2D::drawSubTexture(
-        //    glm::vec3{ 0.0f, 0.0f, 0.5f },     // position
-        //    glm::vec2{ 1.0f, 1.0f },           // size
-        //    0,                                 // rotation
-        //    m_sprite_stair                     // texture
-        //);
-
-        //parrot::Renderer2D::drawSubTexture(
-        //    glm::vec3{ 1.0f, 0.0f, 0.5f },     // position
-        //    glm::vec2{ 1.0f, 1.0f },           // size
-        //    0,                                 // rotation
-        //    m_sprite_barrel                    // texture
-        //);
-
-        //parrot::Renderer2D::drawSubTexture(
-        //    glm::vec3{-1.0f, 0.0f, 0.5f },     // position
-        //    glm::vec2{ 1.0f, 2.0f },           // size
-        //    0,                                 // rotation
-        //    m_sprite_tree                      // texture
-        //);
-
         parrot::Renderer2D::endScene();
 
+        #endif
+
+        m_frame_buffer->unbind();
     }
 }
 
 void Sandbox2D::onImGuiRender() {
 
+    #if 1
     // Docking
     static bool dockspace_open = true;
     static bool opt_fullscreen_persistant = true;
@@ -239,12 +233,15 @@ void Sandbox2D::onImGuiRender() {
     ImGui::Text("Renderer2D:");
     ImGui::Text("Draw Calls: %d", stats.draw_calls);
     ImGui::Text("Quad Count: %d", stats.quad_count);
-    uint32_t texture_id = m_checkerboard_texture->getRendererID();
-    ImGui::Image((void*)texture_id, ImVec2(128, 128));
+    uint32_t texture_id = m_frame_buffer->getColorAttachmentRendererID();
+    ImGui::Image((void*)texture_id, ImVec2(480, 320));
     ImGui::End();
 
     // Dockable Windows End
     ImGui::End();
+
+    #endif
+
 }
 
 void Sandbox2D::onEvent(parrot::Event& event) {
