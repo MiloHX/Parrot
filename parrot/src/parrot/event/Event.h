@@ -42,6 +42,7 @@ namespace parrot {
 
         inline bool isInCategory(EventCategory category) { return getCategoryFlag() & category; }
         inline bool isHandled   ()                       { return m_handled; }
+        inline void setHandled  (bool is_handled)        { m_handled = is_handled; }
     protected:
         bool m_handled = false;
     };

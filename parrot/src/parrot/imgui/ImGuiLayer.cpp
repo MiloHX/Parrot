@@ -56,6 +56,17 @@ namespace parrot {
         ImGui::DestroyContext();
     }
 
+    void ImGuiLayer::onEvent(Event& event) {
+        if (m_block_events) {
+            ImGuiIO& io = ImGui::GetIO();
+            if (event.isInCategory(EventCategory::Event_Cat_Mouse_Button  ) && io.WantCaptureMouse || 
+                event.isInCategory(EventCategory::Event_Cat_Mouse_Movement) && io.WantCaptureMouse || 
+                event.isInCategory(EventCategory::Event_Cat_Keyboard      ) && io.WantCaptureKeyboard) {
+                event.setHandled(true);
+            }
+        }
+    }
+
     void ImGuiLayer::begin() {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();

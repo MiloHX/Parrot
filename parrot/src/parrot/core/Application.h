@@ -25,6 +25,8 @@ namespace parrot {
 
         void exit();
 
+        ImGuiLayer* getImGuiLayer() { return m_imgui_layer; }
+
         inline static Application& get() { return *s_instance; }
     private:
         bool onWindowClose  (WindowCloseEvent  & event);

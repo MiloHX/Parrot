@@ -6,16 +6,16 @@
 
 namespace parrot {
 
-    bool Input::isKeyPressed(int key_code) {
+    bool Input::isKeyPressed(KeyCode key_code) {
         auto window = static_cast<GLFWwindow*>(Application::get().getWindow().getNativeWindow());
-        auto state  = glfwGetKey(window, key_code);
+        auto state  = glfwGetKey(window, (int)key_code);
 
         return state == GLFW_PRESS || state == GLFW_REPEAT;
     }
 
-    bool Input::isMouseButtonPressed(int button) {
+    bool Input::isMouseButtonPressed(MouseButton button) {
         auto window = static_cast<GLFWwindow*>(Application::get().getWindow().getNativeWindow());
-        auto state  = glfwGetMouseButton(window, button);
+        auto state  = glfwGetMouseButton(window, (int)button);
 
         return state == GLFW_PRESS;
     }

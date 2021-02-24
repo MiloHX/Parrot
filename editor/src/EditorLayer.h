@@ -20,7 +20,8 @@ namespace parrot {
         Ref<Shader>                  m_flat_color_shader;
         Ref<Texture2D>               m_checkerboard_texture;
         Ref<FrameBuffer>             m_frame_buffer;
-
-        glm::vec2                    m_viewport_size = glm::vec2(0, 0);
+        glm::vec2                    m_viewport_size    = glm::vec2(0, 0);
+        bool                         m_viewport_focused = false;
+        bool                         m_viewport_hovered = false;
     };
 }

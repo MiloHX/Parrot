@@ -26,7 +26,9 @@ namespace parrot {
 
         {
             PROFILE_SCOPE("CameraController")
-            m_camera_controller.onUpdate(time_step);
+            if (m_viewport_focused) {
+                m_camera_controller.onUpdate(time_step);
+            }
         }
 
         Renderer2D::resetStatics();
@@ -125,6 +127,11 @@ namespace parrot {
         // Viewport
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         ImGui::Begin("Viewport");
+
+        m_viewport_focused = ImGui::IsWindowFocused();
+        m_viewport_hovered = ImGui::IsWindowHovered();
+        Application::get().getImGuiLayer()->blockEvents(!m_viewport_focused || !m_viewport_hovered);
+
         ImVec2 viewport_panel_size = ImGui::GetContentRegionAvail();
         if (m_viewport_size.x != viewport_panel_size.x || m_viewport_size.y != viewport_panel_size.y) {
             m_viewport_size = glm::vec2(viewport_panel_size.x, viewport_panel_size.y);

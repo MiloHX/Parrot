@@ -14,9 +14,14 @@ namespace parrot {
 
         virtual void onAttach     () override;
         virtual void onDetach     () override;
+        virtual void onEvent      (Event& event) override;
         virtual void onImGuiRender() override;
         void begin();
         void end  ();
+
+        void blockEvents(bool block_events) { m_block_events = block_events; }
+    private:
+        bool m_block_events = true;
     };
    
 }

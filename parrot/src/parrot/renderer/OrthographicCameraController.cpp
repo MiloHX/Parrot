@@ -14,22 +14,22 @@ namespace parrot {
 
     void OrthographicCameraController::onUpdate(TimeStep time_step) {
 
-        if (Input::isKeyPressed(PR_KEY_A)) {
+        if (Input::isKeyPressed(KeyCode::Key_A)) {
             m_camera_position.x -= m_camera_move_speed * time_step;
-        } else if (Input::isKeyPressed(PR_KEY_D)) {
+        } else if (Input::isKeyPressed(KeyCode::Key_D)) {
             m_camera_position.x += m_camera_move_speed * time_step;
         }
 
-        if (Input::isKeyPressed(PR_KEY_W)) {
+        if (Input::isKeyPressed(KeyCode::Key_W)) {
             m_camera_position.y += m_camera_move_speed * time_step;
-        } else if (Input::isKeyPressed(PR_KEY_S)) {
+        } else if (Input::isKeyPressed(KeyCode::Key_S)) {
             m_camera_position.y -= m_camera_move_speed * time_step;
         }
 
         if (m_rotation) {
-            if (Input::isKeyPressed(PR_KEY_Q)) {
+            if (Input::isKeyPressed(KeyCode::Key_Q)) {
                 m_camera_rotation += m_camera_rotation_speed * time_step;
-            } else if (Input::isKeyPressed(PR_KEY_E)) {
+            } else if (Input::isKeyPressed(KeyCode::Key_E)) {
                 m_camera_rotation -= m_camera_rotation_speed * time_step;
             }
             m_camera.setZRotation(m_camera_rotation);
@@ -47,6 +47,9 @@ namespace parrot {
     }
 
     void OrthographicCameraController::onResize(float width, float height) {
+        if (width == 0 || height == 0) {
+            return;
+        }
         m_aspect_ratio = width / height;
         calculateView();
     }
@@ -65,7 +68,7 @@ namespace parrot {
     }
 
     bool OrthographicCameraController::onWindowResized(WindowResizedEvent& event) {
-        onResize(static_cast<float>(event.getWidth()), static_cast<float>(event.getHeight()));
+        //onResize(static_cast<float>(event.getWidth()), static_cast<float>(event.getHeight())); TODO: Work for Editor, but need to handle in Actual Game
         return false;
     }
 
