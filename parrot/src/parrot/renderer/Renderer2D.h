@@ -1,5 +1,6 @@
 #pragma once
 
+#include "parrot/renderer/Camera.h"
 #include "parrot/renderer/OrthographicCamera.h"
 #include "parrot/renderer/Texture.h"
 #include "parrot/renderer/SubTexture2D.h"
@@ -11,6 +12,7 @@ namespace parrot {
         static void init();
         static void shutdown();
 
+        static void beginScene(const Camera& camera, const glm::mat4& transform);
         static void beginScene(const OrthographicCamera camera);
         static void endScene();
         static void flush();

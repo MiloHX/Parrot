@@ -1,5 +1,7 @@
 #pragma once
 
+#include "parrot/renderer/RenderCamera.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtx/matrix_major_storage.hpp>
 
@@ -30,7 +32,14 @@ namespace parrot {
         SpriteRendererComponent() = default;
         SpriteRendererComponent(const SpriteRendererComponent&) = default;
         SpriteRendererComponent(const glm::vec4& color) : color(color) {}
+    };
 
+    struct CameraComponent {
+        RenderCamera camera;
+        bool         fixed_aspect_ratio = false;
+
+        CameraComponent() = default;
+        CameraComponent(const CameraComponent&) = default;
     };
 
 }

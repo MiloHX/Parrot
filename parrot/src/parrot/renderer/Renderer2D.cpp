@@ -99,6 +99,14 @@ namespace parrot {
         delete[] s_data.quad_vertices;
     }
 
+    void Renderer2D::beginScene(const Camera& camera, const glm::mat4& transform) {
+        glm::mat4 view_projection = camera.getProjection() * glm::inverse(transform);
+        s_data.quad_texture_shader->bind();
+        s_data.quad_texture_shader->setMat4("u_view_projection", view_projection);
+
+        startBatch();
+    }
+
     void Renderer2D::beginScene(const OrthographicCamera camera) {
         s_data.quad_texture_shader->bind();
         s_data.quad_texture_shader->setMat4("u_view_projection", camera.getViewPorjectionMatrix());

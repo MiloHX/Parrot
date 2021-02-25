@@ -20,6 +20,14 @@ namespace parrot {
 
         m_square_entity = m_active_scene->createEntity("Colored Square");
         m_square_entity.addComponent<SpriteRendererComponent>(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+
+        m_camera_primary = m_active_scene->createEntity("Primary Camera Entity");
+        m_camera_primary.addComponent<CameraComponent>();
+
+        m_camera_secondary = m_active_scene->createEntity("Secondary Camera Entity");
+        m_camera_secondary.addComponent<CameraComponent>();
+
+        m_active_scene->setActiveCamera(m_camera_primary);
     }
 
     void EditorLayer::onDetach() {
@@ -28,6 +36,14 @@ namespace parrot {
 
     void EditorLayer::onUpdate(TimeStep time_step) {
         PROFILE_SCOPE("EditorLayer::onUpdate")
+
+        FrameBufferProps props = m_frame_buffer->getFrameBufferProps();
+
+        if (m_viewport_size.x > 0.0f && m_viewport_size.y > 0.0f && (props.width != m_viewport_size.x || props.height != m_viewport_size.y)) {
+            m_frame_buffer->resize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
+            m_camera_controller.onResize(m_viewport_size.x, m_viewport_size.y);
+            m_active_scene->onViewportResize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
+        }
 
         {
             PROFILE_SCOPE("CameraController")
@@ -44,22 +60,7 @@ namespace parrot {
             RenderCommand::setClearColor(glm::vec4{ 0.3f, 0.3f, 0.3f, 1.0f });
             RenderCommand::clear();
 
-
-            Renderer2D::beginScene(m_camera_controller.getCamera());
-
             m_active_scene->onUpdate(time_step);
-            #if 0
-            Renderer2D::drawQuad(
-                glm::vec3{ 0.0f, 0.0f, 0.0f },     // position
-                glm::vec2{ 1.0f, 1.0f },           // size
-                0,                                 // rotation
-                m_checkerboard_texture,            // texture
-                glm::vec4{1.0f, 1.0f, 1.0f, 1.0f}, // color
-                glm::vec2(1.0f)                    // texture_scale
-            );
-            #endif
-
-            Renderer2D::endScene();
 
             m_frame_buffer->unbind();
         }
@@ -137,6 +138,19 @@ namespace parrot {
             ImGui::Text("%s", m_square_entity.get<TagComponent>().tag.c_str());
             auto& square_color = m_square_entity.get<SpriteRendererComponent>().color;
             ImGui::ColorEdit4("Square Color", glm::value_ptr(square_color));
+            ImGui::DragFloat3("Primary Camera Transform", glm::value_ptr(m_camera_primary.get<TransformComponent>().transform[3]));
+            if (ImGui::Checkbox("Use Primary Camera", &use_primary_camera)) {
+                if (use_primary_camera) {
+                    m_active_scene->setActiveCamera(m_camera_primary);
+                } else {
+                    m_active_scene->setActiveCamera(m_camera_secondary);
+                }
+            }
+            auto& secondary_camera = m_camera_secondary.get<CameraComponent>().camera;
+            float ortho_size = secondary_camera.getOrthographicSize();
+            if (ImGui::DragFloat("Secondary Camera Ortho Size", &ortho_size)) {
+                secondary_camera.setOrthographicSize(ortho_size);
+            }
             ImGui::End();
         }
 
@@ -151,14 +165,12 @@ namespace parrot {
         ImVec2 viewport_panel_size = ImGui::GetContentRegionAvail();
         if (m_viewport_size.x != viewport_panel_size.x || m_viewport_size.y != viewport_panel_size.y) {
             m_viewport_size = glm::vec2(viewport_panel_size.x, viewport_panel_size.y);
-            m_frame_buffer->resize(static_cast<uint32_t>(m_viewport_size.x), static_cast<uint32_t>(m_viewport_size.y));
-
-            m_camera_controller.onResize(m_viewport_size.x, m_viewport_size.y);
         }
         uint32_t texture_id = m_frame_buffer->getColorAttachmentRendererID();
         ImGui::Image((void*)(static_cast<size_t>(texture_id)), ImVec2(m_viewport_size.x, m_viewport_size.y), ImVec2(0, 1), ImVec2(1, 0));
         ImGui::End();
         ImGui::PopStyleVar();
+
 
         // Dockable Windows End
         ImGui::End();
