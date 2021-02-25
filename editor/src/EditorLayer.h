@@ -25,6 +25,6 @@ namespace parrot {
         bool                         m_viewport_hovered = false;
 
         Ref<Scene>                   m_active_scene;
-        entt::entity                 m_square_entity;
+        Entity                       m_square_entity;
     };
 }

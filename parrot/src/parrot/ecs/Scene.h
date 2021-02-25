@@ -6,17 +6,20 @@
 
 namespace parrot {
     
+    class Entity;
+
     class Scene {
     public:
         Scene();
         ~Scene();
 
-        entt::entity    createEntity();
-        entt::registry& getRegistry() { return m_registry; }
+        Entity Scene::createEntity(const std::string& name = std::string());
 
         void onUpdate(TimeStep time_step);
     private:
         entt::registry m_registry;
+
+        friend class Entity;
     };
 
 }

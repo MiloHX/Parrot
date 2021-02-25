@@ -16,6 +16,13 @@ namespace parrot {
         operator const glm::mat4&() const { return transform; }
     };
 
+    struct TagComponent {
+        std::string tag;
+        TagComponent() = default;
+        TagComponent(const TagComponent&) = default;
+        TagComponent(const std::string& tag) : tag(tag) {}
+    };
+
 
     struct SpriteRendererComponent {
         glm::vec4 color = glm::vec4(1.0f);

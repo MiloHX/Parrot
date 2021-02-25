@@ -1,6 +1,7 @@
 #include "prpch.h"
 #include "parrot/ecs/Scene.h"
 #include "parrot/ecs/Component.h"
+#include "parrot/ecs/Entity.h"
 #include "parrot/renderer/Renderer2D.h"
 
 namespace parrot {
@@ -10,8 +11,12 @@ namespace parrot {
     Scene::~Scene() {
     }
 
-    entt::entity Scene::createEntity() {
-        return m_registry.create();
+    Entity Scene::createEntity(const std::string& name) {
+        Entity entity = Entity(m_registry.create(), this);
+        entity.addComponent<TransformComponent>();
+        auto& tag_component = entity.addComponent<TagComponent>(name);
+        tag_component.tag = name.empty() ? "Entity" : name;
+        return entity;
     }
 
     void Scene::onUpdate(TimeStep time_step) {

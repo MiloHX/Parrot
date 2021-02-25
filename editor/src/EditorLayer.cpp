@@ -14,11 +14,12 @@ namespace parrot {
         FrameBufferProps frame_buffer_props;
         frame_buffer_props.width  = 1280;
         frame_buffer_props.height = 720;
+
         m_frame_buffer = FrameBuffer::create(frame_buffer_props);
         m_active_scene = createRef<Scene>();
-        m_square_entity = m_active_scene->createEntity();
-        m_active_scene->getRegistry().emplace<TransformComponent     >(m_square_entity);
-        m_active_scene->getRegistry().emplace<SpriteRendererComponent>(m_square_entity, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+
+        m_square_entity = m_active_scene->createEntity("Colored Square");
+        m_square_entity.addComponent<SpriteRendererComponent>(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
     }
 
     void EditorLayer::onDetach() {
@@ -76,10 +77,10 @@ namespace parrot {
 
         if (opt_fullscreen) {
             ImGuiViewport* viewport = ImGui::GetMainViewport();
-            ImGui::SetNextWindowPos     (viewport->Pos );
-            ImGui::SetNextWindowSize    (viewport->Size);
-            ImGui::SetNextWindowViewport(viewport->ID  );
-            ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding  , 0.0f);
+            ImGui::SetNextWindowPos(viewport->Pos);
+            ImGui::SetNextWindowSize(viewport->Size);
+            ImGui::SetNextWindowViewport(viewport->ID);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
             ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
             window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
             window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
@@ -130,9 +131,14 @@ namespace parrot {
         ImGui::Text("Renderer2D:");
         ImGui::Text("Draw Calls: %d", stats.draw_calls);
         ImGui::Text("Quad Count: %d", stats.quad_count);
-        auto& square_color = m_active_scene->getRegistry().get<SpriteRendererComponent>(m_square_entity).color;
-        ImGui::ColorEdit4("Square Color", glm::value_ptr(square_color));
-        ImGui::End();
+
+        if (m_square_entity.valid()) {
+            ImGui::Separator();
+            ImGui::Text("%s", m_square_entity.get<TagComponent>().tag.c_str());
+            auto& square_color = m_square_entity.get<SpriteRendererComponent>().color;
+            ImGui::ColorEdit4("Square Color", glm::value_ptr(square_color));
+            ImGui::End();
+        }
 
         // Viewport
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
