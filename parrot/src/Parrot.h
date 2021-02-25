@@ -8,6 +8,8 @@
 #include "parrot/core/input.h"
 #include "parrot/core/KeyCode.h"
 #include "parrot/imgui/ImGuiLayer.h"
+#include "parrot/ecs/Scene.h"
+#include "parrot/ecs/Component.h"
 
 //----------- Tool ------------
 #include "parrot/core/Log.h"

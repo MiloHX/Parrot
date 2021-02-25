@@ -15,6 +15,10 @@ namespace parrot {
         frame_buffer_props.width  = 1280;
         frame_buffer_props.height = 720;
         m_frame_buffer = FrameBuffer::create(frame_buffer_props);
+        m_active_scene = createRef<Scene>();
+        m_square_entity = m_active_scene->createEntity();
+        m_active_scene->getRegistry().emplace<TransformComponent     >(m_square_entity);
+        m_active_scene->getRegistry().emplace<SpriteRendererComponent>(m_square_entity, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
     }
 
     void EditorLayer::onDetach() {
@@ -22,7 +26,7 @@ namespace parrot {
 
 
     void EditorLayer::onUpdate(TimeStep time_step) {
-        PROFILE_SCOPE("Sandbox2D::onUpdate")
+        PROFILE_SCOPE("EditorLayer::onUpdate")
 
         {
             PROFILE_SCOPE("CameraController")
@@ -39,9 +43,12 @@ namespace parrot {
             RenderCommand::setClearColor(glm::vec4{ 0.3f, 0.3f, 0.3f, 1.0f });
             RenderCommand::clear();
 
+
             Renderer2D::beginScene(m_camera_controller.getCamera());
 
-            parrot::Renderer2D::drawQuad(
+            m_active_scene->onUpdate(time_step);
+            #if 0
+            Renderer2D::drawQuad(
                 glm::vec3{ 0.0f, 0.0f, 0.0f },     // position
                 glm::vec2{ 1.0f, 1.0f },           // size
                 0,                                 // rotation
@@ -49,6 +56,7 @@ namespace parrot {
                 glm::vec4{1.0f, 1.0f, 1.0f, 1.0f}, // color
                 glm::vec2(1.0f)                    // texture_scale
             );
+            #endif
 
             Renderer2D::endScene();
 
@@ -122,6 +130,8 @@ namespace parrot {
         ImGui::Text("Renderer2D:");
         ImGui::Text("Draw Calls: %d", stats.draw_calls);
         ImGui::Text("Quad Count: %d", stats.quad_count);
+        auto& square_color = m_active_scene->getRegistry().get<SpriteRendererComponent>(m_square_entity).color;
+        ImGui::ColorEdit4("Square Color", glm::value_ptr(square_color));
         ImGui::End();
 
         // Viewport
@@ -140,7 +150,7 @@ namespace parrot {
             m_camera_controller.onResize(m_viewport_size.x, m_viewport_size.y);
         }
         uint32_t texture_id = m_frame_buffer->getColorAttachmentRendererID();
-        ImGui::Image((void*)texture_id, ImVec2(m_viewport_size.x, m_viewport_size.y), ImVec2(0, 1), ImVec2(1, 0));
+        ImGui::Image((void*)(static_cast<size_t>(texture_id)), ImVec2(m_viewport_size.x, m_viewport_size.y), ImVec2(0, 1), ImVec2(1, 0));
         ImGui::End();
         ImGui::PopStyleVar();
 

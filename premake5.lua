@@ -20,6 +20,7 @@ include_dir["Glad"]      = "parrot/vendor/Glad/include"
 include_dir["imgui"]     = "parrot/vendor/imgui"
 include_dir["glm"]       = "parrot/vendor/glm"
 include_dir["stb_image"] = "parrot/vendor/stb_image"
+include_dir["entt"]      = "parrot/vendor/entt/include"
 
 group "Dependencies"
     include "parrot/vendor/GLFW"
@@ -64,6 +65,7 @@ project "parrot"
         "%{include_dir.imgui}",
         "%{include_dir.glm}",
         "%{include_dir.stb_image}",
+        "%{include_dir.entt}"
     }
 
     links {
@@ -120,7 +122,8 @@ project "editor"
         "parrot/vendor/spdlog/include",
         "parrot/src",
         "%{include_dir.glm}",
-        "%{include_dir.imgui}"
+        "%{include_dir.imgui}",
+        "%{include_dir.entt}"
     }
 
     links {
@@ -170,7 +173,8 @@ project "sandbox"
         "parrot/vendor/spdlog/include",
         "parrot/src",
         "%{include_dir.glm}",
-        "%{include_dir.imgui}"
+        "%{include_dir.imgui}",
+        "%{include_dir.entt}"
     }
 
     links {

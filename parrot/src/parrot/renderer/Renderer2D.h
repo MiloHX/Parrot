@@ -36,6 +36,13 @@ namespace parrot {
             const glm::vec2&      texture_scale = glm::vec2(1.0)
         );
 
+        static void drawQuad(
+            const glm::mat4&      transform,
+            const Ref<Texture2D>& texture, 
+            const glm::vec4&      color         = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+            const glm::vec2&      texture_scale = glm::vec2(1.0)
+        );
+
         static void drawSubTexture(
             const glm::vec3&         position, 
             const glm::vec2&         size,
@@ -44,6 +51,14 @@ namespace parrot {
             const glm::vec4&         color         = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
             const glm::vec2&         texture_scale = glm::vec2(1.0)
         );
+
+        static void drawSubTexture(
+            const glm::mat4&         transform,
+            const Ref<SubTexture2D>& sub_texture, 
+            const glm::vec4&         color         = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+            const glm::vec2&         texture_scale = glm::vec2(1.0)
+        );
+
     private:
         static void startBatch();
         static void endBatch();

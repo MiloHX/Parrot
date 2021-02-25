@@ -119,12 +119,12 @@ namespace parrot {
     }
 
     void Renderer2D::endBatch() {
-        uint32_t data_size = (uint8_t*)s_data.quad_vertices_pointer - (uint8_t*)s_data.quad_vertices;
+        uint32_t data_size = static_cast<uint32_t>((uint8_t*)s_data.quad_vertices_pointer - (uint8_t*)s_data.quad_vertices);
         s_data.quad_vertex_buffer->setData(s_data.quad_vertices, data_size);
     }
 
     void Renderer2D::flush(){
-        for (int i = 0; i < s_data.texture_slot_index; ++i) {
+        for (uint32_t i = 0; i < s_data.texture_slot_index; ++i) {
             s_data.texture_slots[i]->bind(i);
         }
             
@@ -148,35 +148,6 @@ namespace parrot {
         const glm::vec4&      color, 
         const glm::vec2&      texture_scale
     ) {
-        constexpr std::pair<float, float> fixed_texture_coords[4] = { 
-            { 0.0f, 0.0f }, 
-            { 1.0f, 0.0f }, 
-            { 1.0f, 1.0f }, 
-            { 0.0f, 1.0f } 
-        };
-
-        if (s_data.quad_index_count >= Renderer2Data::MAX_QUAD_INDICES_PER_DRAW) {
-            endBatch();
-            flush();
-            startBatch();
-        }
-
-        float texture_index = 0.0f;
-
-        if (texture) {
-            for (int i = 1; i < s_data.texture_slot_index; i++) {
-                if (*s_data.texture_slots[i].get() == *texture.get()) {
-                    texture_index = static_cast<float>(i);
-                    break;
-                }
-            }
-            if (texture_index == 0.0f) {
-                texture_index = (float)s_data.texture_slot_index;
-                s_data.texture_slots[texture_index] = texture;
-                ++s_data.texture_slot_index;
-            }
-        } 
-
         glm::mat4 transform;
         if (rotation) {
             if (size.x != 1.0f || size.y != 1.0f) {
@@ -195,6 +166,39 @@ namespace parrot {
                 transform = glm::translate(glm::mat4(1.0f), position);
             }
         }
+
+        drawQuad(transform, texture, color, texture_scale);
+    }
+
+    void Renderer2D::drawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const glm::vec4& color, const glm::vec2& texture_scale) {
+        constexpr std::pair<float, float> fixed_texture_coords[4] = { 
+            { 0.0f, 0.0f }, 
+            { 1.0f, 0.0f }, 
+            { 1.0f, 1.0f }, 
+            { 0.0f, 1.0f } 
+        };
+
+        if (s_data.quad_index_count >= Renderer2Data::MAX_QUAD_INDICES_PER_DRAW) {
+            endBatch();
+            flush();
+            startBatch();
+        }
+
+        float texture_index = 0.0f;
+
+        if (texture) {
+            for (uint32_t i = 1; i < s_data.texture_slot_index; i++) {
+                if (*s_data.texture_slots[i].get() == *texture.get()) {
+                    texture_index = static_cast<float>(i);
+                    break;
+                }
+            }
+            if (texture_index == 0.0f) {
+                texture_index = (float)(s_data.texture_slot_index);
+                s_data.texture_slots[static_cast<size_t>(texture_index)] = texture;
+                ++s_data.texture_slot_index;
+            }
+        } 
 
         for (int i = 0; i < 4; ++i) {
             s_data.quad_vertices_pointer->position  = glm::vec3(transform * s_data.quad_vertex_positions[i]);
@@ -219,30 +223,6 @@ namespace parrot {
         const glm::vec4&         color, 
         const glm::vec2&         texture_scale
     ) {
-        // std::pair<float, float> texture_coords[4] = 
-        const glm::vec2*     texture_coords = sub_texture->getTexCoordList();
-        const Ref<Texture2D> texture        = sub_texture->getTexture();
-
-        if (s_data.quad_index_count >= Renderer2Data::MAX_QUAD_INDICES_PER_DRAW) {
-            endBatch();
-            flush();
-            startBatch();
-        }
-
-        float texture_index = 0.0f;
-
-        for (int i = 1; i < s_data.texture_slot_index; i++) {
-            if (*s_data.texture_slots[i].get() == *texture.get()) {
-                texture_index = static_cast<float>(i);
-                break;
-            }
-        }
-        if (texture_index == 0.0f) {
-            texture_index = (float)s_data.texture_slot_index;
-            s_data.texture_slots[texture_index] = texture;
-            ++s_data.texture_slot_index;
-        }
-
         glm::mat4 transform;
         if (rotation) {
             if (size.x != 1.0f || size.y != 1.0f) {
@@ -260,6 +240,34 @@ namespace parrot {
             } else {
                 transform = glm::translate(glm::mat4(1.0f), position);
             }
+        }
+
+        drawSubTexture(transform, sub_texture, color, texture_scale);
+    }
+
+    void Renderer2D::drawSubTexture(const glm::mat4& transform, const Ref<SubTexture2D>& sub_texture, const glm::vec4& color, const glm::vec2& texture_scale) {
+
+        const glm::vec2*     texture_coords = sub_texture->getTexCoordList();
+        const Ref<Texture2D> texture        = sub_texture->getTexture();
+
+        if (s_data.quad_index_count >= Renderer2Data::MAX_QUAD_INDICES_PER_DRAW) {
+            endBatch();
+            flush();
+            startBatch();
+        }
+
+        float texture_index = 0.0f;
+
+        for (uint32_t i = 1; i < s_data.texture_slot_index; i++) {
+            if (*s_data.texture_slots[i].get() == *texture.get()) {
+                texture_index = static_cast<float>(i);
+                break;
+            }
+        }
+        if (texture_index == 0.0f) {
+            texture_index = (float)s_data.texture_slot_index;
+            s_data.texture_slots[static_cast<size_t>(texture_index)] = texture;
+            ++s_data.texture_slot_index;
         }
 
         for (int i = 0; i < 4; ++i) {

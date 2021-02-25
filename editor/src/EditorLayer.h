@@ -23,5 +23,8 @@ namespace parrot {
         glm::vec2                    m_viewport_size    = glm::vec2(0, 0);
         bool                         m_viewport_focused = false;
         bool                         m_viewport_hovered = false;
+
+        Ref<Scene>                   m_active_scene;
+        entt::entity                 m_square_entity;
     };
 }

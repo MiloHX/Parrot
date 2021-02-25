@@ -57,7 +57,7 @@ namespace parrot {
                 shaderDataTypeToOpenGLBaseType(element.type), 
                 element.normalized ? GL_TRUE : GL_FALSE, 
                 vertex_layout.getStride(), 
-                (const void*)(element.offset)
+                (const void*)(static_cast<size_t>(element.offset))
             );
             ++index;
         }
