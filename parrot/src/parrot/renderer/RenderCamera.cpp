@@ -7,11 +7,19 @@ namespace parrot {
         recalculateProjection();
     }
 
+    void RenderCamera::setPerspective(float fov, float near_clip, float far_clip) {
+        m_projection_type = ProjectionType::Perspective;
+        m_perspective_FOV  = fov;
+        m_perspective_near = near_clip;
+        m_perspective_far  = far_clip;
+        recalculateProjection();
+    }
+
     void RenderCamera::setOrthographic(float size, float near_clip, float far_clip) {
+        m_projection_type = ProjectionType::Orthographic;
         m_orthographic_size = size;
         m_orthographic_near = near_clip;
         m_orthographic_far  = far_clip;
-
         recalculateProjection();
     }
 
@@ -21,11 +29,15 @@ namespace parrot {
     }
 
     void RenderCamera::recalculateProjection() {
-        float ortho_left   = -m_orthographic_size * m_aspect_ratio * 0.5f;
-        float ortho_right  =  m_orthographic_size * m_aspect_ratio * 0.5f;
-        float ortho_bottom = -m_orthographic_size * 0.5f;
-        float ortho_top    =  m_orthographic_size * 0.5f;
-        m_projection = glm::ortho(ortho_left, ortho_right, ortho_bottom, ortho_top, m_orthographic_near, m_orthographic_far);
+        if (m_projection_type == ProjectionType::Perspective) {
+            m_projection = glm::perspective(m_perspective_FOV, m_aspect_ratio, m_perspective_near, m_perspective_far);
+        } else {
+            float ortho_left   = -m_orthographic_size * m_aspect_ratio * 0.5f;
+            float ortho_right  =  m_orthographic_size * m_aspect_ratio * 0.5f;
+            float ortho_bottom = -m_orthographic_size * 0.5f;
+            float ortho_top    =  m_orthographic_size * 0.5f;
+            m_projection = glm::ortho(ortho_left, ortho_right, ortho_bottom, ortho_top, m_orthographic_near, m_orthographic_far);
+        }
     }
 
 }
