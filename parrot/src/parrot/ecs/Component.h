@@ -9,14 +9,23 @@
 namespace parrot {
 
     struct TransformComponent {
-        glm::mat4 transform = glm::mat4();
+        glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
+        glm::vec3 rotation    = glm::vec3(0.0f, 0.0f, 0.0f);
+        glm::vec3 scale       = glm::vec3(1.0f, 1.0f, 1.0f);
+
+        //glm::mat4 transform = glm::mat4();
 
         TransformComponent() = default;
         TransformComponent(const TransformComponent&) = default;
-        TransformComponent(const glm::mat4& other) : transform(other) {}
+        TransformComponent(const glm::vec3& translation) : translation(translation) {}
 
-        operator       glm::mat4&()       { return transform; }
-        operator const glm::mat4&() const { return transform; }
+        glm::mat4 getTransform() const {
+            glm::mat4 rotation_mat = glm::rotate(glm::mat4(1.0f), rotation.x, glm::vec3( 1, 0, 0 )) *
+                                     glm::rotate(glm::mat4(1.0f), rotation.y, glm::vec3( 0, 1, 0 )) *
+                                     glm::rotate(glm::mat4(1.0f), rotation.z, glm::vec3( 0, 0, 1 ));
+
+            return glm::translate(glm::mat4(1.0), translation) * rotation_mat * glm::scale(glm::mat4(1.0f), scale);
+        }
     };
 
     struct TagComponent {

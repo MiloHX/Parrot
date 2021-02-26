@@ -1,6 +1,7 @@
 #include "panel/HierarchyPanel.h"
 
 #include <imgui.h>
+#include <imgui_internal.h>
 
 namespace parrot {
 
@@ -48,6 +49,61 @@ namespace parrot {
         }
     }
 
+    static void drawVec3Control(const std::string& label, glm::vec3& values, float reset_value=0.0f, float column_width = 100.0f) {
+        ImGui::PushID(label.c_str());
+
+        ImGui::Columns(2);
+        ImGui::SetColumnWidth(0, column_width);
+        ImGui::Text(label.c_str());
+        ImGui::NextColumn();
+
+        ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+
+        float line_height = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+        ImVec2 button_size = { line_height + 3.0f, line_height };
+
+        ImGui::PushStyleColor(ImGuiCol_Button       , ImVec4(0.8f, 0.1f, 0.15f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.9f, 0.2f,  0.2f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive , ImVec4(0.8f, 0.1f, 0.15f, 1.0f));
+        if (ImGui::Button("X", button_size)) {
+            values.x = reset_value;
+        }
+        ImGui::SameLine();
+        ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
+        ImGui::PopItemWidth();
+        ImGui::SameLine();
+        ImGui::PopStyleColor(3);
+
+        ImGui::PushStyleColor(ImGuiCol_Button       , ImVec4(0.2f, 0.7f,  0.2f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3f, 0.8f,  0.3f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive , ImVec4(0.2f, 0.7f,  0.2f, 1.0f));
+        if (ImGui::Button("Y", button_size)) {
+            values.y = reset_value;
+        }
+        ImGui::SameLine();
+        ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
+        ImGui::PopItemWidth();
+        ImGui::SameLine();
+        ImGui::PopStyleColor(3);
+
+        ImGui::PushStyleColor(ImGuiCol_Button       , ImVec4(0.1f, 0.25f,  0.8f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2f,  0.3f,  0.9f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive , ImVec4(0.1f, 0.25f,  0.8f, 1.0f));
+        if (ImGui::Button("Z", button_size)) {
+            values.z = reset_value;
+        }
+        ImGui::SameLine();
+        ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
+        ImGui::PopItemWidth();
+        ImGui::PopStyleColor(3);
+        ImGui::PopStyleVar();
+
+        ImGui::Columns(1);
+
+        ImGui::PopID();
+    }
+
     void HierarchyPanel::drawComponents(Entity entity) {
         if (entity.hasComponent<TagComponent>()) {
             auto& tag = entity.get<TagComponent>().tag;
@@ -64,8 +120,10 @@ namespace parrot {
         if (entity.hasComponent<TransformComponent>()) {
 
             if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Transform")) {
-                auto& transform = entity.get<TransformComponent>().transform;
-                ImGui::DragFloat3("position", glm::value_ptr(transform[3]), 0.1f);
+                auto& transform_component = entity.get<TransformComponent>();
+                drawVec3Control("Translation", transform_component.translation);
+                drawVec3Control("Rotation"   , transform_component.rotation   );
+                drawVec3Control("Scale"      , transform_component.scale      , 1.0f);
 
                 ImGui::TreePop();
             }

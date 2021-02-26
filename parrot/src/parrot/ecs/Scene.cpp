@@ -39,13 +39,13 @@ namespace parrot {
         // Render
         if (m_registry.valid(m_active_camera_entity)) {
             auto& camera          = m_registry.get<CameraComponent   >(m_active_camera_entity).camera;
-            auto& camera_tranform = m_registry.get<TransformComponent>(m_active_camera_entity).transform;
+            auto& camera_tranform = m_registry.get<TransformComponent>(m_active_camera_entity).getTransform();
             Renderer2D::beginScene(camera, camera_tranform);
             auto render_group = m_registry.view<TransformComponent, SpriteRendererComponent>();
 
             for (auto entity : render_group) {
                 auto& [transform, sprite] = render_group.get<TransformComponent, SpriteRendererComponent>(entity);
-                Renderer2D::drawQuad(transform, nullptr, sprite.color);
+                Renderer2D::drawQuad(transform.getTransform(), nullptr, sprite.color);
             }
 
             Renderer2D::endScene();

@@ -42,19 +42,19 @@ namespace parrot {
 
             void onUpdate(TimeStep time_step) {
 
-                auto& transform = get<TransformComponent>().transform;
+                auto& translation = get<TransformComponent>().translation;
                 float speed = 5.0f;
                 if (Input::isKeyPressed(KeyCode::Key_A)) {
-                    transform[3][0] -= speed * time_step;
+                    translation.x -= speed * time_step;
                 }
                 if (Input::isKeyPressed(KeyCode::Key_D)) {
-                    transform[3][0] += speed * time_step;
+                    translation.x += speed * time_step;
                 }
                 if (Input::isKeyPressed(KeyCode::Key_W)) {
-                    transform[3][1] += speed * time_step;
+                    translation.y += speed * time_step;
                 }
                 if (Input::isKeyPressed(KeyCode::Key_S)) {
-                    transform[3][1] -= speed * time_step;
+                    translation.y -= speed * time_step;
                 }
             }
         };
