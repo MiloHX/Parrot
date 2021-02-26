@@ -52,14 +52,9 @@ namespace parrot {
         void(*onDestroyFunction  )(ScriptableEntity* )           = nullptr;
         void(*onUpdateFunction   )(ScriptableEntity* , TimeStep) = nullptr;
 
-        //std::function<void()>                            instantiateFunction;
-        //std::function<void()>                            destroyFunction;
-        //std::function<void(ScriptableEntity*)>           onCreateFunction;
-        //std::function<void(ScriptableEntity*)>           onDestroyFunction;
-        //std::function<void(ScriptableEntity*, TimeStep)> onUpdateFunction;
-
         template<typename T>
         void bind() {
+            // TODO: allow missing functions
             instantiateFunction = [](ScriptableEntity*& instance) { instance = new T();  };
             destroyFunction     = [](ScriptableEntity*& instance) { delete static_cast<T*>(instance); instance = nullptr; };
             onCreateFunction    = [](ScriptableEntity*  instance) { static_cast<T*>(instance)->onCreate(); };

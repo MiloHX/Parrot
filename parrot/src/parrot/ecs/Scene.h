@@ -16,7 +16,9 @@ namespace parrot {
 
         void onUpdate(TimeStep time_step);
         void onViewportResize(uint32_t width, uint32_t height);
+
         void setActiveCamera(Entity camera_entity);
+        bool isActiveCamera (Entity camera_entity);
     private:
         entt::registry m_registry;
 

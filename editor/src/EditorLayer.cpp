@@ -170,27 +170,7 @@ namespace parrot {
         ImGui::Text("Renderer2D:");
         ImGui::Text("Draw Calls: %d", stats.draw_calls);
         ImGui::Text("Quad Count: %d", stats.quad_count);
-
-        if (m_square_entity.valid()) {
-            ImGui::Separator();
-            ImGui::Text("%s", m_square_entity.get<TagComponent>().tag.c_str());
-            auto& square_color = m_square_entity.get<SpriteRendererComponent>().color;
-            ImGui::ColorEdit4("Square Color", glm::value_ptr(square_color));
-            ImGui::DragFloat3("Primary Camera Transform", glm::value_ptr(m_camera_primary.get<TransformComponent>().transform[3]));
-            if (ImGui::Checkbox("Use Primary Camera", &m_use_primary_camera)) {
-                if (m_use_primary_camera) {
-                    m_active_scene->setActiveCamera(m_camera_primary);
-                } else {
-                    m_active_scene->setActiveCamera(m_camera_secondary);
-                }
-            }
-            auto& secondary_camera = m_camera_secondary.get<CameraComponent>().camera;
-            float ortho_size = secondary_camera.getOrthographicSize();
-            if (ImGui::DragFloat("Secondary Camera Ortho Size", &ortho_size)) {
-                secondary_camera.setOrthographicSize(ortho_size);
-            }
-            ImGui::End();
-        }
+        ImGui::End();
 
         // Viewport
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));

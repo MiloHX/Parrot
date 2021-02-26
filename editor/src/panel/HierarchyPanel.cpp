@@ -78,6 +78,12 @@ namespace parrot {
                 auto& camera_component = entity.get<CameraComponent>();
                 auto& camera           = camera_component.camera;
 
+                bool set_as_active = m_scene->isActiveCamera(entity);
+                if (ImGui::Checkbox("Set As Active Camera", &set_as_active)) {
+                    if (set_as_active) {
+                        m_scene->setActiveCamera(entity);
+                    }
+                }
                 ImGui::Checkbox("Fixed Aspect Ratio", &camera_component.fixed_aspect_ratio);
 
                 const char* projection_type_strings[] = { "Perspective", "Orthographic" };
@@ -132,6 +138,16 @@ namespace parrot {
                     }
                 }
 
+                ImGui::TreePop();
+            }
+
+        }
+
+        if (entity.hasComponent<SpriteRendererComponent>()) {
+
+            if (ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Sprite Renderer")) {
+                auto& source = entity.get<SpriteRendererComponent>();
+                ImGui::ColorEdit4("Color", glm::value_ptr(source.color));
                 ImGui::TreePop();
             }
 

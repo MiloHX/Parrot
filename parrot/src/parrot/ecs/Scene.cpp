@@ -65,4 +65,8 @@ namespace parrot {
     void Scene::setActiveCamera(Entity camera_entity){
         m_active_camera_entity = camera_entity.m_entity_handle;
     }
+
+    bool Scene::isActiveCamera(Entity camera_entity) {
+        return camera_entity.m_entity_handle == m_active_camera_entity;
+    }
 }
