@@ -38,6 +38,7 @@ namespace parrot {
             return m_scene->m_registry.valid(m_entity_handle);
         }
 
+        operator bool    () const { return m_entity_handle != entt::null; }
         operator uint32_t() const { return static_cast<uint32_t>(m_entity_handle); }
         bool operator ==(const Entity& other)  const { return (m_entity_handle == other.m_entity_handle) && (m_scene == other.m_scene); }
         bool operator !=(const Entity& other)  const { return (m_entity_handle != other.m_entity_handle) || (m_scene != other.m_scene); }

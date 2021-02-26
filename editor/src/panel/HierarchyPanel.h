@@ -14,6 +14,7 @@ namespace parrot {
         void onImGuiRender();
     private:
         void drawEntityNode(Entity entity);
+        void drawComponents(Entity entity);
 
         Ref<Scene> m_scene;
         Entity     m_selected_entity;
