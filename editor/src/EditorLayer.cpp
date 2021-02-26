@@ -28,6 +28,36 @@ namespace parrot {
         m_camera_secondary.addComponent<CameraComponent>();
 
         m_active_scene->setActiveCamera(m_camera_primary);
+        m_use_primary_camera = true;
+
+        class CameraController : public ScriptableEntity {
+        public:
+            void onCreate() {
+            }
+
+            void onDestroy() {
+            }
+
+            void onUpdate(TimeStep time_step) {
+
+                auto& transform = get<TransformComponent>().transform;
+                float speed = 5.0f;
+                if (Input::isKeyPressed(KeyCode::Key_A)) {
+                    transform[3][0] -= speed * time_step;
+                }
+                if (Input::isKeyPressed(KeyCode::Key_D)) {
+                    transform[3][0] += speed * time_step;
+                }
+                if (Input::isKeyPressed(KeyCode::Key_W)) {
+                    transform[3][1] += speed * time_step;
+                }
+                if (Input::isKeyPressed(KeyCode::Key_S)) {
+                    transform[3][1] -= speed * time_step;
+                }
+            }
+        };
+
+        m_camera_secondary.addComponent<ScriptComponent>().bind<CameraController>();
     }
 
     void EditorLayer::onDetach() {
@@ -139,8 +169,8 @@ namespace parrot {
             auto& square_color = m_square_entity.get<SpriteRendererComponent>().color;
             ImGui::ColorEdit4("Square Color", glm::value_ptr(square_color));
             ImGui::DragFloat3("Primary Camera Transform", glm::value_ptr(m_camera_primary.get<TransformComponent>().transform[3]));
-            if (ImGui::Checkbox("Use Primary Camera", &use_primary_camera)) {
-                if (use_primary_camera) {
+            if (ImGui::Checkbox("Use Primary Camera", &m_use_primary_camera)) {
+                if (m_use_primary_camera) {
                     m_active_scene->setActiveCamera(m_camera_primary);
                 } else {
                     m_active_scene->setActiveCamera(m_camera_secondary);

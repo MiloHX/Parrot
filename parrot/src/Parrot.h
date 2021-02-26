@@ -10,6 +10,7 @@
 #include "parrot/imgui/ImGuiLayer.h"
 #include "parrot/ecs/Scene.h"
 #include "parrot/ecs/Entity.h"
+#include "parrot/ecs/ScriptableEntity.h"
 #include "parrot/ecs/Component.h"
 
 //----------- Tool ------------

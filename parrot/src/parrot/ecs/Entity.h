@@ -40,7 +40,7 @@ namespace parrot {
 
     private:
         entt::entity m_entity_handle{ entt::null };
-        Scene*       m_scene;
-        friend       Scene;
+        Scene*       m_scene = nullptr;
+        friend class Scene;
     };
 }

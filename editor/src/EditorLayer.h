@@ -28,6 +28,6 @@ namespace parrot {
         Entity                       m_square_entity;
         Entity                       m_camera_primary;
         Entity                       m_camera_secondary;
-        bool                         use_primary_camera = false;
+        bool                         m_use_primary_camera = false;
     };
 }

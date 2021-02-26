@@ -20,7 +20,23 @@ namespace parrot {
     }
 
     void Scene::onUpdate(TimeStep time_step) {
+        // Script
+        m_registry.view<ScriptComponent>().each([=](auto entity, auto& script) {
+            if (!script.instance) {
+                script.instantiateFunction(script.instance);
+                if (script.instance) {
+                    script.instance->m_entity = Entity{ entity, this };
+                }
+                if (script.onCreateFunction) {
+                    script.onCreateFunction(script.instance);
+                }
+            }
+            if (script.onUpdateFunction) {
+                script.onUpdateFunction(script.instance, time_step);
+            }
+        });
 
+        // Render
         if (m_registry.valid(m_active_camera_entity)) {
             auto& camera          = m_registry.get<CameraComponent   >(m_active_camera_entity).camera;
             auto& camera_tranform = m_registry.get<TransformComponent>(m_active_camera_entity).transform;
