@@ -26,6 +26,7 @@ namespace parrot {
         uint32_t m_viewport_height = 0;
 
         friend class Entity;
+        friend class HierarchyPanel;
     };
 
 }

@@ -119,6 +119,7 @@ project "editor"
     }
 
     includedirs {
+        "%{prj.name}/src",
         "parrot/vendor/spdlog/include",
         "parrot/src",
         "%{include_dir.glm}",
@@ -170,6 +171,7 @@ project "sandbox"
     }
 
     includedirs {
+        "%{prj.name}/src",
         "parrot/vendor/spdlog/include",
         "parrot/src",
         "%{include_dir.glm}",

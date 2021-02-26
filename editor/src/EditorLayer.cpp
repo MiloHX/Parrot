@@ -1,5 +1,4 @@
 #include "EditorLayer.h"
-
 #include <imgui.h>
 
 namespace parrot {
@@ -58,6 +57,8 @@ namespace parrot {
         };
 
         m_camera_secondary.addComponent<ScriptComponent>().bind<CameraController>();
+
+        m_hierarchy_panel.setScene(m_active_scene);
     }
 
     void EditorLayer::onDetach() {
@@ -155,6 +156,10 @@ namespace parrot {
         }
 
         // Dockable Windows Need to put here:
+
+        // Heirarchy
+
+        m_hierarchy_panel.onImGuiRender();
 
         // Statistics
         ImGui::Begin("Statistics");

@@ -1,6 +1,9 @@
 #pragma once
 
+#include "panel/HierarchyPanel.h"
+
 #include <Parrot.h>
+
 
 namespace parrot {
 
@@ -29,5 +32,7 @@ namespace parrot {
         Entity                       m_camera_primary;
         Entity                       m_camera_secondary;
         bool                         m_use_primary_camera = false;
+
+        HierarchyPanel               m_hierarchy_panel;
     };
 }
