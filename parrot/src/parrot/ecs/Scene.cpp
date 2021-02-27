@@ -13,10 +13,14 @@ namespace parrot {
 
     Entity Scene::createEntity(const std::string& name) {
         Entity entity = Entity(m_registry.create(), this);
-        entity.addComponent<TransformComponent>();
-        auto& tag_component = entity.addComponent<TagComponent>(name);
+        entity.add<TransformComponent>();
+        auto& tag_component = entity.add<TagComponent>(name);
         tag_component.tag = name.empty() ? "Entity" : name;
         return entity;
+    }
+
+    void Scene::destroyEntity(Entity entity) {
+        m_registry.destroy(entity);
     }
 
     void Scene::onUpdate(TimeStep time_step) {
@@ -40,9 +44,8 @@ namespace parrot {
         if (m_registry.valid(m_active_camera_entity)) {
             auto& camera          = m_registry.get<CameraComponent   >(m_active_camera_entity).camera;
             auto& camera_tranform = m_registry.get<TransformComponent>(m_active_camera_entity).getTransform();
-            Renderer2D::beginScene(camera, camera_tranform);
             auto render_group = m_registry.view<TransformComponent, SpriteRendererComponent>();
-
+            Renderer2D::beginScene(camera, camera_tranform);
             for (auto entity : render_group) {
                 auto& [transform, sprite] = render_group.get<TransformComponent, SpriteRendererComponent>(entity);
                 Renderer2D::drawQuad(transform.getTransform(), nullptr, sprite.color);
@@ -54,6 +57,8 @@ namespace parrot {
     }
 
     void Scene::onViewportResize(uint32_t width, uint32_t height) {
+        m_viewprot_width  = width;
+        m_viewport_height = height;
         auto view = m_registry.view<CameraComponent>();
         for (auto entity : view) {
             auto& camera_component = view.get<CameraComponent>(entity);
@@ -64,6 +69,7 @@ namespace parrot {
     }
     void Scene::setActiveCamera(Entity camera_entity){
         m_active_camera_entity = camera_entity.m_entity_handle;
+        onViewportResize(m_viewprot_width, m_viewport_height);
     }
 
     bool Scene::isActiveCamera(Entity camera_entity) {

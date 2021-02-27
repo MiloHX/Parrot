@@ -132,10 +132,12 @@ namespace parrot {
     }
 
     void Renderer2D::flush(){
+        if (s_data.quad_index_count <= 0) {
+            return;
+        }
         for (uint32_t i = 0; i < s_data.texture_slot_index; ++i) {
             s_data.texture_slots[i]->bind(i);
         }
-            
         RenderCommand::drawIndexed(s_data.vertex_array, s_data.quad_index_count);
         ++s_data.statistics.draw_calls;
     }

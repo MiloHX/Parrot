@@ -12,25 +12,25 @@ namespace parrot {
         Entity(const Entity& other) = default;
 
         template<typename T, typename... Args>
-        T& addComponent(Args&&... args) {
-            PR_CORE_ASSERT(!hasComponent<T>(), "Entity already has component!")
+        T& add(Args&&... args) {
+            PR_CORE_ASSERT(!has<T>(), "Entity already has component!")
             return m_scene->m_registry.emplace<T>(m_entity_handle, std::forward<Args>(args)...);
         }
 
         template<typename T>
         T& get() {
-            PR_CORE_ASSERT(hasComponent<T>(), "Entity doesn't have component when getting it!")
+            PR_CORE_ASSERT(has<T>(), "Entity doesn't have component when getting it!")
             return m_scene->m_registry.get<T>(m_entity_handle);
         }
 
         template<typename T>
-        void removeComponent() {
-            PR_CORE_ASSERT(hasComponent<T>(), "Entity doesn't have component when removing it!")
+        void remove() {
+            PR_CORE_ASSERT(has<T>(), "Entity doesn't have component when removing it!")
             m_scene->m_registry.remove<T>(m_entity_handle);
         }
 
         template<typename T>
-        bool hasComponent() {
+        bool has() {
             return m_scene->m_registry.has<T>(m_entity_handle);
         }
 
@@ -38,8 +38,9 @@ namespace parrot {
             return m_scene->m_registry.valid(m_entity_handle);
         }
 
-        operator bool    () const { return m_entity_handle != entt::null; }
-        operator uint32_t() const { return static_cast<uint32_t>(m_entity_handle); }
+        operator bool        () const { return m_entity_handle != entt::null; }
+        operator uint32_t    () const { return static_cast<uint32_t>(m_entity_handle); }
+        operator entt::entity() const { return m_entity_handle; }
         bool operator ==(const Entity& other)  const { return (m_entity_handle == other.m_entity_handle) && (m_scene == other.m_scene); }
         bool operator !=(const Entity& other)  const { return (m_entity_handle != other.m_entity_handle) || (m_scene != other.m_scene); }
     private:

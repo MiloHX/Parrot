@@ -18,16 +18,16 @@ namespace parrot {
         m_active_scene = createRef<Scene>();
 
         m_square_entity = m_active_scene->createEntity("Colored Square");
-        m_square_entity.addComponent<SpriteRendererComponent>(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+        m_square_entity.add<SpriteRendererComponent>(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
 
         auto square_entity_2 = m_active_scene->createEntity("Colored Square 2");
-        square_entity_2.addComponent<SpriteRendererComponent>(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
+        square_entity_2.add<SpriteRendererComponent>(glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
 
         m_camera_primary = m_active_scene->createEntity("Primary Camera Entity");
-        m_camera_primary.addComponent<CameraComponent>();
+        m_camera_primary.add<CameraComponent>();
 
         m_camera_secondary = m_active_scene->createEntity("Secondary Camera Entity");
-        m_camera_secondary.addComponent<CameraComponent>();
+        m_camera_secondary.add<CameraComponent>();
 
         m_active_scene->setActiveCamera(m_camera_primary);
         m_use_primary_camera = true;
@@ -59,7 +59,7 @@ namespace parrot {
             }
         };
 
-        m_camera_secondary.addComponent<ScriptComponent>().bind<CameraController>();
+        m_camera_secondary.add<ScriptComponent>().bind<CameraController>();
 
         m_hierarchy_panel.setScene(m_active_scene);
     }
