@@ -133,11 +133,15 @@ namespace parrot {
             ImGui::PopStyleVar(2);
         }
 
-        ImGuiIO& io = ImGui::GetIO();
+        ImGuiIO&   io    = ImGui::GetIO();
+        ImGuiStyle& style = ImGui::GetStyle();
+        float min_window_size_x = style.WindowMinSize.x;
+        style.WindowMinSize.x = 400.0f;
         if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) {
             ImGuiID dockspace_id = ImGui::GetID("Parrot");
             ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         }
+        style.WindowMinSize.x = min_window_size_x;
 
         if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("FILE")) {

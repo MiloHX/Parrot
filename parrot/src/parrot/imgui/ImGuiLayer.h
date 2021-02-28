@@ -20,6 +20,8 @@ namespace parrot {
         void end  ();
 
         void blockEvents(bool block_events) { m_block_events = block_events; }
+
+        void setDarkThemeColors();
     private:
         bool m_block_events = true;
     };

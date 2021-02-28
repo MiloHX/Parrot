@@ -30,6 +30,9 @@ namespace parrot {
         //io.ConfigFlags |= ImGuiViewportFlags_NoTaskBarIcon;
         //io.ConfigFlags |= ImGuiViewportFlags_NoAutoMerge;
 
+        io.FontDefault = io.Fonts->AddFontFromFileTTF("asset/font/Jura/static/Jura-Regular.ttf", 28.0f);
+        io.Fonts->AddFontFromFileTTF("asset/font/Jura/static/Jura-Bold.ttf", 28.0f);
+
         // Setup ImGui Style
         ImGui::StyleColorsDark();
         // ImGui::StyleColorsClassic();
@@ -41,6 +44,8 @@ namespace parrot {
             style.WindowRounding = 0.0f;
             style.Colors[ImGuiCol_WindowBg].w = 1.0f;
         }
+
+        setDarkThemeColors();
 
         Application& app = Application::get();
         GLFWwindow* window = static_cast<GLFWwindow*>(app.getWindow().getNativeWindow());
@@ -87,6 +92,34 @@ namespace parrot {
             ImGui::RenderPlatformWindowsDefault();
             glfwMakeContextCurrent(backup_current_context);
         }
+
+    }
+
+    void ImGuiLayer::setDarkThemeColors() {
+        auto& style_colors = ImGui::GetStyle().Colors;
+        style_colors[ImGuiCol_WindowBg          ] = ImVec4{  0.1f, 0.10f, 0.11f, 1.0f };
+
+        style_colors[ImGuiCol_Header            ] = ImVec4{  0.2f, 0.20f, 0.21f, 1.0f };
+        style_colors[ImGuiCol_HeaderHovered     ] = ImVec4{  0.3f, 0.30f, 0.31f, 1.0f };
+        style_colors[ImGuiCol_HeaderActive      ] = ImVec4{ 0.15f, 0.15f, 0.15f, 1.0f };
+
+        style_colors[ImGuiCol_Button            ] = ImVec4{  0.2f, 0.20f, 0.21f, 1.0f };
+        style_colors[ImGuiCol_ButtonHovered     ] = ImVec4{  0.3f, 0.30f, 0.31f, 1.0f };
+        style_colors[ImGuiCol_ButtonActive      ] = ImVec4{ 0.15f, 0.15f, 0.15f, 1.0f };
+
+        style_colors[ImGuiCol_FrameBg           ] = ImVec4{  0.2f, 0.20f, 0.21f, 1.0f };
+        style_colors[ImGuiCol_FrameBgHovered    ] = ImVec4{  0.3f, 0.30f, 0.31f, 1.0f };
+        style_colors[ImGuiCol_FrameBgActive     ] = ImVec4{ 0.15f, 0.15f, 0.15f, 1.0f };
+
+        style_colors[ImGuiCol_Tab               ] = ImVec4{ 0.15f, 0.15f, 0.15f, 1.0f };
+        style_colors[ImGuiCol_TabHovered        ] = ImVec4{ 0.38f, 0.38f, 0.38f, 1.0f };
+        style_colors[ImGuiCol_TabActive         ] = ImVec4{ 0.28f, 0.28f, 0.28f, 1.0f };
+        style_colors[ImGuiCol_TabUnfocused      ] = ImVec4{ 0.15f, 0.15f, 0.15f, 1.0f };
+        style_colors[ImGuiCol_TabUnfocusedActive] = ImVec4{ 0.20f, 0.20f, 0.20f, 1.0f };
+
+        style_colors[ImGuiCol_TitleBg           ] = ImVec4{ 0.15f, 0.15f, 0.15f, 1.0f };
+        style_colors[ImGuiCol_TitleBgActive     ] = ImVec4{ 0.15f, 0.15f, 0.15f, 1.0f };
+        style_colors[ImGuiCol_TitleBgCollapsed  ] = ImVec4{ 0.15f, 0.15f, 0.15f, 1.0f };
 
     }
 
