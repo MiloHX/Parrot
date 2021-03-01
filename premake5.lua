@@ -21,11 +21,13 @@ include_dir["imgui"]     = "parrot/vendor/imgui"
 include_dir["glm"]       = "parrot/vendor/glm"
 include_dir["stb_image"] = "parrot/vendor/stb_image"
 include_dir["entt"]      = "parrot/vendor/entt/include"
+include_dir["yaml_cpp"]  = "parrot/vendor/yaml_cpp/include"
 
 group "Dependencies"
     include "parrot/vendor/GLFW"
     include "parrot/vendor/Glad"
     include "parrot/vendor/imgui"
+    include "parrot/vendor/yaml_cpp"
     
 group ""
 
@@ -65,13 +67,15 @@ project "parrot"
         "%{include_dir.imgui}",
         "%{include_dir.glm}",
         "%{include_dir.stb_image}",
-        "%{include_dir.entt}"
+        "%{include_dir.entt}",
+        "%{include_dir.yaml_cpp}"
     }
 
     links {
         "GLFW",
         "Glad",
         "imgui",
+        "yaml_cpp",
         "opengl32.lib"
     }
 
