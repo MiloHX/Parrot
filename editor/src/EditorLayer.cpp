@@ -1,5 +1,8 @@
 #include "EditorLayer.h"
+
+#include <parrot/io/SceneSerializer.h>
 #include <imgui.h>
+
 
 namespace parrot {
 
@@ -17,6 +20,7 @@ namespace parrot {
         m_frame_buffer = FrameBuffer::create(frame_buffer_props);
         m_active_scene = createRef<Scene>();
 
+        #if 0
         m_square_entity = m_active_scene->createEntity("Colored Square");
         m_square_entity.add<SpriteRendererComponent>(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
 
@@ -61,7 +65,9 @@ namespace parrot {
 
         m_camera_secondary.add<ScriptComponent>().bind<CameraController>();
 
+        #endif
         m_hierarchy_panel.setScene(m_active_scene);
+
     }
 
     void EditorLayer::onDetach() {
@@ -146,10 +152,21 @@ namespace parrot {
         if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("FILE")) {
 
-                if (ImGui::MenuItem("Test Item 1 (NoSplit)", "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0))
-                    dockspace_flags ^= ImGuiDockNodeFlags_NoSplit;
-                if (ImGui::MenuItem("Test Item 2 (NoResize)", "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0))
-                    dockspace_flags ^= ImGuiDockNodeFlags_NoResize;
+                //if (ImGui::MenuItem("Test Item 1 (NoSplit)", "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0))
+                //    dockspace_flags ^= ImGuiDockNodeFlags_NoSplit;
+                //if (ImGui::MenuItem("Test Item 2 (NoResize)", "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0))
+                //    dockspace_flags ^= ImGuiDockNodeFlags_NoResize;
+
+
+                if (ImGui::MenuItem("Serialize", NULL, false)) {
+                    SceneSerializer serializer(m_active_scene);
+                    serializer.serialize("asset/scene/example.parrot");
+                }
+
+                if (ImGui::MenuItem("Deserialize", NULL, false)) {
+                    SceneSerializer serializer(m_active_scene);
+                    serializer.deserialize("asset/scene/example.parrot");
+                }
 
                 ImGui::Separator();
                 if (ImGui::MenuItem("Exit", NULL, false)) {

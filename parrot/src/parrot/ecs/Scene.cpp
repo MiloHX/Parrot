@@ -19,7 +19,7 @@ namespace parrot {
         return entity;
     }
 
-    void Scene::destroyEntity(Entity entity) {
+    void Scene::destroyEntity(Entity& entity) {
         m_registry.destroy(entity);
     }
 
@@ -67,12 +67,12 @@ namespace parrot {
             }
         }
     }
-    void Scene::setActiveCamera(Entity camera_entity){
+    void Scene::setActiveCamera(Entity& camera_entity){
         m_active_camera_entity = camera_entity.m_entity_handle;
         onViewportResize(m_viewprot_width, m_viewport_height);
     }
 
-    bool Scene::isActiveCamera(Entity camera_entity) {
+    bool Scene::isActiveCamera(Entity& camera_entity) {
         return camera_entity.m_entity_handle == m_active_camera_entity;
     }
 }

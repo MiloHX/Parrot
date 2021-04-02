@@ -61,7 +61,7 @@ namespace parrot {
         ImGui::End();
     }
 
-    void HierarchyPanel::drawEntityNode(Entity entity) {
+    void HierarchyPanel::drawEntityNode(Entity& entity) {
         auto& tag = entity.get<TagComponent>().tag;
 
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ((m_selected_entity == entity) ? ImGuiTreeNodeFlags_Selected : 0);
@@ -156,7 +156,7 @@ namespace parrot {
     }
 
     template <typename T, typename UIFunction>
-    static void DrawComponent(const std::string& name, Entity entity, UIFunction uiFunction) {
+    static void DrawComponent(const std::string& name, Entity& entity, UIFunction uiFunction) {
         const ImGuiTreeNodeFlags tree_note_flags = 
             ImGuiTreeNodeFlags_DefaultOpen      | 
             ImGuiTreeNodeFlags_AllowItemOverlap |
@@ -195,7 +195,7 @@ namespace parrot {
         }
     }
 
-    void HierarchyPanel::drawComponents(Entity entity) {
+    void HierarchyPanel::drawComponents(Entity& entity) {
         if (entity.has<TagComponent>()) {
             auto& tag = entity.get<TagComponent>().tag;
 
