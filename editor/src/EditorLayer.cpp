@@ -1,6 +1,7 @@
 #include "EditorLayer.h"
 
 #include <parrot/io/SceneSerializer.h>
+#include <parrot/tool/PlatformTool.h>
 #include <imgui.h>
 
 
@@ -152,20 +153,16 @@ namespace parrot {
         if (ImGui::BeginMenuBar()) {
             if (ImGui::BeginMenu("FILE")) {
 
-                //if (ImGui::MenuItem("Test Item 1 (NoSplit)", "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0))
-                //    dockspace_flags ^= ImGuiDockNodeFlags_NoSplit;
-                //if (ImGui::MenuItem("Test Item 2 (NoResize)", "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0))
-                //    dockspace_flags ^= ImGuiDockNodeFlags_NoResize;
-
-
-                if (ImGui::MenuItem("Serialize", NULL, false)) {
-                    SceneSerializer serializer(m_active_scene);
-                    serializer.serialize("asset/scene/example.parrot");
+                if (ImGui::MenuItem("New", "Ctrl+N")) {
+                    newScene();
                 }
 
-                if (ImGui::MenuItem("Deserialize", NULL, false)) {
-                    SceneSerializer serializer(m_active_scene);
-                    serializer.deserialize("asset/scene/example.parrot");
+                if (ImGui::MenuItem("Open...", "Ctrl+O")) {
+                    openScene();
+                }
+
+                if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S")) {
+                    saveSceneAs();
                 }
 
                 ImGui::Separator();
@@ -217,6 +214,65 @@ namespace parrot {
 
     void EditorLayer::onEvent(Event& event) {
         m_camera_controller.onEvent(event);
+
+        EventDispatcher dispatcher(event);
+        dispatcher.dispatch<KeyPressedEvent>(PR_BIND_EVENT_FUNC(EditorLayer::onKeyPressed));
+    }
+
+    bool EditorLayer::onKeyPressed(KeyPressedEvent& event) {
+        if (event.getRepeatCount() > 0) {
+            return false;
+        }
+
+        bool control = Input::isKeyPressed(KeyCode::Key_Left_Control) || Input::isKeyPressed(KeyCode::Key_Right_Control);
+        bool shift   = Input::isKeyPressed(KeyCode::Key_Left_Shift  ) || Input::isKeyPressed(KeyCode::Key_Right_Shift  );
+        switch (event.getKeyCode()) {
+            case (int)KeyCode::Key_S: {
+                if (control && shift) {
+                    saveSceneAs();
+                }
+                break; 
+            }
+            case (int)KeyCode::Key_N: {
+                if (control) {
+                    newScene();
+                }
+                break; 
+            }   
+            case (int)KeyCode::Key_O: {
+                if (control) {
+                    openScene();
+                }
+                break; 
+            }
+            break;
+        }
+    }
+
+    void EditorLayer::newScene() {
+        m_active_scene = createRef<Scene>();
+        m_active_scene->onViewportResize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
+        m_hierarchy_panel.setScene(m_active_scene);
+    }
+
+    void EditorLayer::openScene() {
+        std::string file_path = FileDialogs::openFile("Parrot Scene (*.parrot)\0*.parrot\0");
+        if (!file_path.empty()) {
+            m_active_scene = createRef<Scene>();
+            m_active_scene->onViewportResize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
+            m_hierarchy_panel.setScene(m_active_scene);
+
+            SceneSerializer serializer(m_active_scene);
+            serializer.deserialize(file_path);
+        }
+    }
+
+    void EditorLayer::saveSceneAs() {
+        std::string file_path = FileDialogs::saveFile("Parrot Scene (*.parrot)\0*.parrot\0");
+        if (!file_path.empty()) {
+            SceneSerializer serializer(m_active_scene);
+            serializer.serialize(file_path);
+        }
     }
 
 }

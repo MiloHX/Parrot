@@ -110,7 +110,7 @@ void Sandbox2D::onUpdate(parrot::TimeStep time_step) {
         #endif
 
         #if 1
-        if (parrot::Input::isMouseButtonPressed(PR_MOUSE_BUTTON_LEFT)) {
+        if (parrot::Input::isMouseButtonPressed(parrot::MouseButton::Button_Left)) {
             auto [x, y] = parrot::Input::getMousePosition();
             auto width  = parrot::Application::get().getWindow().getWidth ();
             auto height = parrot::Application::get().getWindow().getHeight();

@@ -18,6 +18,11 @@ namespace parrot {
         void onImGuiRender() override;
         void onEvent(Event& event) override;
     private:
+        bool onKeyPressed(KeyPressedEvent& event);
+        void newScene();
+        void openScene();
+        void saveSceneAs();
+
         OrthographicCameraController m_camera_controller;
         Ref<VertexArray>             m_vertex_array;
         Ref<Shader>                  m_flat_color_shader;

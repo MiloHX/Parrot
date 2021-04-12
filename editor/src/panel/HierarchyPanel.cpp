@@ -7,6 +7,7 @@ namespace parrot {
 
     HierarchyPanel::HierarchyPanel(const Ref<Scene>& scene) {
         setScene(scene);
+        m_selected_entity = {};
     }
 
     void HierarchyPanel::setScene(const Ref<Scene>& scene) {
