@@ -18,6 +18,7 @@ include_dir = {}
 include_dir["GLFW"]      = "parrot/vendor/GLFW/include"
 include_dir["Glad"]      = "parrot/vendor/Glad/include"
 include_dir["imgui"]     = "parrot/vendor/imgui"
+include_dir["ImGuizmo"]  = "parrot/vendor/ImGuizmo"
 include_dir["glm"]       = "parrot/vendor/glm"
 include_dir["stb_image"] = "parrot/vendor/stb_image"
 include_dir["entt"]      = "parrot/vendor/entt/include"
@@ -27,6 +28,7 @@ group "Dependencies"
     include "parrot/vendor/GLFW"
     include "parrot/vendor/Glad"
     include "parrot/vendor/imgui"
+    include "parrot/vendor/ImGuizmo"
     include "parrot/vendor/yaml_cpp"
     
 group ""
@@ -65,6 +67,7 @@ project "parrot"
         "%{include_dir.GLFW}",
         "%{include_dir.Glad}",
         "%{include_dir.imgui}",
+        "%{include_dir.ImGuizmo}",
         "%{include_dir.glm}",
         "%{include_dir.stb_image}",
         "%{include_dir.entt}",
@@ -75,6 +78,7 @@ project "parrot"
         "GLFW",
         "Glad",
         "imgui",
+        "ImGuizmo",
         "yaml_cpp",
         "opengl32.lib"
     }
@@ -128,6 +132,7 @@ project "editor"
         "parrot/src",
         "%{include_dir.glm}",
         "%{include_dir.imgui}",
+        "%{include_dir.ImGuizmo}",
         "%{include_dir.entt}"
     }
 
@@ -180,6 +185,7 @@ project "sandbox"
         "parrot/src",
         "%{include_dir.glm}",
         "%{include_dir.imgui}",
+        "%{include_dir.ImGuizmo}",
         "%{include_dir.entt}"
     }
 

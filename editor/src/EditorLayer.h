@@ -32,12 +32,14 @@ namespace parrot {
         bool                         m_viewport_focused = false;
         bool                         m_viewport_hovered = false;
 
-        Ref<Scene>                   m_active_scene;
-        Entity                       m_square_entity;
-        Entity                       m_camera_primary;
-        Entity                       m_camera_secondary;
-        bool                         m_use_primary_camera = false;
+        Ref<Scene> m_active_scene;
+        Entity     m_square_entity;
+        Entity     m_camera_primary;
+        Entity     m_camera_secondary;
+        bool       m_use_primary_camera = false;
 
-        HierarchyPanel               m_hierarchy_panel;
+        int m_gizmo_type = -1;
+
+        HierarchyPanel m_hierarchy_panel;
     };
 }

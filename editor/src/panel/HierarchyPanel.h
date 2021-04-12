@@ -12,6 +12,8 @@ namespace parrot {
         void setScene(const Ref<Scene>& scene);
 
         void onImGuiRender();
+
+        Entity getSelectedEntity() const { return m_selected_entity; }
     private:
         void drawEntityNode(Entity& entity);
         void drawComponents(Entity& entity);

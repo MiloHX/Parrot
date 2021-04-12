@@ -6,6 +6,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/matrix_major_storage.hpp>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
+
 namespace parrot {
 
     struct TransformComponent {
@@ -20,9 +23,10 @@ namespace parrot {
         TransformComponent(const glm::vec3& translation) : translation(translation) {}
 
         glm::mat4 getTransform() const {
-            glm::mat4 rotation_mat = glm::rotate(glm::mat4(1.0f), rotation.x, glm::vec3( 1, 0, 0 )) *
-                                     glm::rotate(glm::mat4(1.0f), rotation.y, glm::vec3( 0, 1, 0 )) *
-                                     glm::rotate(glm::mat4(1.0f), rotation.z, glm::vec3( 0, 0, 1 ));
+            glm::mat4 rotation_mat = glm::toMat4(glm::quat(rotation));
+            //glm::mat4 rotation_mat = glm::rotate(glm::mat4(1.0f), rotation.x, glm::vec3( 1, 0, 0 )) *
+            //                         glm::rotate(glm::mat4(1.0f), rotation.y, glm::vec3( 0, 1, 0 )) *
+            //                         glm::rotate(glm::mat4(1.0f), rotation.z, glm::vec3( 0, 0, 1 ));
 
             return glm::translate(glm::mat4(1.0), translation) * rotation_mat * glm::scale(glm::mat4(1.0f), scale);
         }

@@ -72,6 +72,13 @@ namespace parrot {
         onViewportResize(m_viewprot_width, m_viewport_height);
     }
 
+    Entity Scene::getActiveCamera() {
+        if (m_active_camera_entity != entt::null) {
+            return Entity{ m_active_camera_entity, this };  // TODO: Not a good solution
+        }
+        return {};
+    }
+
     bool Scene::isActiveCamera(Entity& camera_entity) {
         return camera_entity.m_entity_handle == m_active_camera_entity;
     }

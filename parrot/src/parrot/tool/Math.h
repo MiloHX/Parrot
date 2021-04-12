@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <algorithm>
+#include <glm/glm.hpp>
 
 namespace parrot {
 
@@ -27,6 +28,8 @@ namespace parrot {
     inline bool almostEqual(const double lhs, const double rhs, const double epsilon = 0.01) {
         return abs(lhs - rhs) <= epsilon;
     }
+
+    bool decomposeGlmTransform(const glm::mat4& transform, glm::vec3& out_translation, glm::vec3& out_rotation, glm::vec3& out_scale);
 
     //
     // fnv1a String Hash Solution is from 

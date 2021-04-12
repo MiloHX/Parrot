@@ -1,9 +1,10 @@
 #include "EditorLayer.h"
+#include "parrot/tool/Math.h"
 
 #include <parrot/io/SceneSerializer.h>
 #include <parrot/tool/PlatformTool.h>
 #include <imgui.h>
-
+#include <ImGuizmo.h>
 
 namespace parrot {
 
@@ -196,7 +197,7 @@ namespace parrot {
 
         m_viewport_focused = ImGui::IsWindowFocused();
         m_viewport_hovered = ImGui::IsWindowHovered();
-        Application::get().getImGuiLayer()->blockEvents(!m_viewport_focused || !m_viewport_hovered);
+        Application::get().getImGuiLayer()->blockEvents(!m_viewport_focused && !m_viewport_hovered);
 
         ImVec2 viewport_panel_size = ImGui::GetContentRegionAvail();
         if (m_viewport_size.x != viewport_panel_size.x || m_viewport_size.y != viewport_panel_size.y) {
@@ -204,6 +205,60 @@ namespace parrot {
         }
         uint32_t texture_id = m_frame_buffer->getColorAttachmentRendererID();
         ImGui::Image((void*)(static_cast<size_t>(texture_id)), ImVec2(m_viewport_size.x, m_viewport_size.y), ImVec2(0, 1), ImVec2(1, 0));
+
+        // Gizmos
+        Entity selected_entity = m_hierarchy_panel.getSelectedEntity();
+        auto   camera_entity   = m_active_scene->getActiveCamera();
+        if (selected_entity.valid() && camera_entity.valid() && m_gizmo_type != -1) {
+            ImGuizmo::SetOrthographic(false);
+            ImGuizmo::SetDrawlist();
+            float window_width  = (float)ImGui::GetWindowWidth ();
+            float window_height = (float)ImGui::GetWindowHeight();
+            ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, window_width, window_height);
+
+            const auto& camera        = camera_entity.get<CameraComponent>().camera;
+
+            const glm::mat4& camera_proj = camera.getProjection();
+            glm::mat4        camera_view = glm::inverse(camera_entity.get<TransformComponent>().getTransform());
+
+            // Entity Transform
+            auto&     entity_transform_comp = selected_entity.get<TransformComponent>();
+            glm::mat4 entity_transform      = entity_transform_comp.getTransform();
+
+            // Snapping
+            bool  snap       = Input::isKeyPressed(KeyCode::Key_Left_Shift) || Input::isKeyPressed(KeyCode::Key_Right_Shift);
+
+            float snap_value = 0.5f;
+            if (m_gizmo_type == ImGuizmo::OPERATION::ROTATE) {
+                snap_value = 45.0f;
+            }
+            float snap_values[3] = { snap_value, snap_value, snap_value };
+
+            ImGuizmo::Manipulate(
+                glm::value_ptr(camera_view),
+                glm::value_ptr(camera_proj),
+                (ImGuizmo::OPERATION)m_gizmo_type,
+                ImGuizmo::LOCAL,
+                glm::value_ptr(entity_transform),
+                nullptr,
+                snap ? snap_values : nullptr
+            );
+
+            if (ImGuizmo::IsUsing()) {
+                glm::vec3 translation;
+                glm::vec3 rotation;
+                glm::vec3 scale;
+                decomposeGlmTransform(entity_transform, translation, rotation, scale);
+                entity_transform_comp.translation = translation;
+                entity_transform_comp.scale       = scale      ;
+
+                glm::vec3 delta_rotation = rotation - entity_transform_comp.rotation;
+                entity_transform_comp.rotation += delta_rotation;
+            }
+
+        }
+
+
         ImGui::End();
         ImGui::PopStyleVar();
 
@@ -244,6 +299,22 @@ namespace parrot {
                     openScene();
                 }
                 break; 
+            }
+            case (int)KeyCode::Key_Q: {
+                m_gizmo_type = -1;
+                break;
+            }
+            case (int)KeyCode::Key_W: {
+                m_gizmo_type = ImGuizmo::OPERATION::TRANSLATE;
+                break;
+            }
+            case (int)KeyCode::Key_E: {
+                m_gizmo_type = ImGuizmo::OPERATION::ROTATE;
+                break;
+            }
+            case (int)KeyCode::Key_R: {
+                m_gizmo_type = ImGuizmo::OPERATION::SCALE;
+                break;
             }
             break;
         }

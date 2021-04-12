@@ -1,8 +1,6 @@
 #include "ParticleSystem.h"
 #include "parrot/tool/Random.h"
 
-#include "glm/gtx/constants.hpp"
-
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/compatibility.hpp"
 

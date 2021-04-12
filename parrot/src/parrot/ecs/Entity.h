@@ -35,7 +35,7 @@ namespace parrot {
         }
 
         bool valid() {
-            return m_scene->m_registry.valid(m_entity_handle);
+            return m_scene ? m_scene->m_registry.valid(m_entity_handle) : false;
         }
 
         operator bool        () const { return m_entity_handle != entt::null; }
