@@ -22,6 +22,9 @@ namespace parrot {
         m_frame_buffer = FrameBuffer::create(frame_buffer_props);
         m_active_scene = createRef<Scene>();
 
+        m_editor_camera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
+
+
         #if 0
         m_square_entity = m_active_scene->createEntity("Colored Square");
         m_square_entity.add<SpriteRendererComponent>(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
@@ -84,6 +87,7 @@ namespace parrot {
         if (m_viewport_size.x > 0.0f && m_viewport_size.y > 0.0f && (props.width != m_viewport_size.x || props.height != m_viewport_size.y)) {
             m_frame_buffer->resize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
             m_camera_controller.onResize(m_viewport_size.x, m_viewport_size.y);
+            m_editor_camera.setViewportSize(m_viewport_size.x, m_viewport_size.y);
             m_active_scene->onViewportResize((uint32_t)m_viewport_size.x, (uint32_t)m_viewport_size.y);
         }
 
@@ -92,6 +96,7 @@ namespace parrot {
             if (m_viewport_focused) {
                 m_camera_controller.onUpdate(time_step);
             }
+            m_editor_camera.onUpdate(time_step);
         }
 
         Renderer2D::resetStatics();
@@ -102,7 +107,7 @@ namespace parrot {
             RenderCommand::setClearColor(glm::vec4{ 0.3f, 0.3f, 0.3f, 1.0f });
             RenderCommand::clear();
 
-            m_active_scene->onUpdate(time_step);
+            m_active_scene->onEditorUpdate(time_step, m_editor_camera);
 
             m_frame_buffer->unbind();
         }
@@ -208,18 +213,23 @@ namespace parrot {
 
         // Gizmos
         Entity selected_entity = m_hierarchy_panel.getSelectedEntity();
-        auto   camera_entity   = m_active_scene->getActiveCamera();
-        if (selected_entity.valid() && camera_entity.valid() && m_gizmo_type != -1) {
+        //auto   camera_entity   = m_active_scene->getActiveCamera();
+        //if (selected_entity.valid() && camera_entity.valid() && m_gizmo_type != -1) {
+        if (selected_entity.valid() && m_gizmo_type != -1) {
             ImGuizmo::SetOrthographic(false);
             ImGuizmo::SetDrawlist();
             float window_width  = (float)ImGui::GetWindowWidth ();
             float window_height = (float)ImGui::GetWindowHeight();
             ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, window_width, window_height);
 
-            const auto& camera        = camera_entity.get<CameraComponent>().camera;
+            // Runtime Camera
+            // const auto& camera        = camera_entity.get<CameraComponent>().camera;
+            // const glm::mat4& camera_proj = camera.getProjection();
+            // glm::mat4        camera_view = glm::inverse(camera_entity.get<TransformComponent>().getTransform());
 
-            const glm::mat4& camera_proj = camera.getProjection();
-            glm::mat4        camera_view = glm::inverse(camera_entity.get<TransformComponent>().getTransform());
+            // Editor camera
+            const glm::mat4& camera_proj = m_editor_camera.getProjection();
+            glm::mat4        camera_view = m_editor_camera.getViewMatrix();
 
             // Entity Transform
             auto&     entity_transform_comp = selected_entity.get<TransformComponent>();
@@ -269,6 +279,7 @@ namespace parrot {
 
     void EditorLayer::onEvent(Event& event) {
         m_camera_controller.onEvent(event);
+        m_editor_camera.onEvent(event);
 
         EventDispatcher dispatcher(event);
         dispatcher.dispatch<KeyPressedEvent>(PR_BIND_EVENT_FUNC(EditorLayer::onKeyPressed));

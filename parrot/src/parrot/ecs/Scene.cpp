@@ -3,6 +3,8 @@
 #include "parrot/ecs/Entity.h"
 #include "parrot/ecs/Component.h"
 #include "parrot/renderer/Renderer2D.h"
+#include "parrot/renderer/EditorCamera.h"
+
 
 namespace parrot {
     Scene::Scene() {
@@ -54,6 +56,17 @@ namespace parrot {
             Renderer2D::endScene();
         }
 
+    }
+
+    void Scene::onEditorUpdate(TimeStep time_step, EditorCamera& camera) {
+        auto render_group = m_registry.view<TransformComponent, SpriteRendererComponent>();
+        Renderer2D::beginScene(camera);
+        for (auto entity : render_group) {
+            auto& [transform, sprite] = render_group.get<TransformComponent, SpriteRendererComponent>(entity);
+            Renderer2D::drawQuad(transform.getTransform(), nullptr, sprite.color);
+        }
+
+        Renderer2D::endScene();
     }
 
     void Scene::onViewportResize(uint32_t width, uint32_t height) {

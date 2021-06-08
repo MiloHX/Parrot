@@ -107,7 +107,15 @@ namespace parrot {
         startBatch();
     }
 
-    void Renderer2D::beginScene(const OrthographicCamera camera) {
+    void Renderer2D::beginScene(const  EditorCamera& camera) {
+        glm::mat4 view_projection = camera.getViewProjection();
+        s_data.quad_texture_shader->bind();
+        s_data.quad_texture_shader->setMat4("u_view_projection", view_projection);
+
+        startBatch();
+    }
+
+    void Renderer2D::beginScene(const OrthographicCamera& camera) {
         s_data.quad_texture_shader->bind();
         s_data.quad_texture_shader->setMat4("u_view_projection", camera.getViewPorjectionMatrix());
 

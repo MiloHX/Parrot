@@ -6,6 +6,7 @@
 namespace parrot {
     
     class Entity;
+    class EditorCamera;
 
     class Scene {
     public:
@@ -16,6 +17,7 @@ namespace parrot {
         void destroyEntity(Entity& entity);
 
         void onUpdate(TimeStep time_step);
+        void onEditorUpdate(TimeStep time_step, EditorCamera& camera);
         void onViewportResize(uint32_t width, uint32_t height);
 
         void   setActiveCamera(Entity& camera_entity);

@@ -38,6 +38,8 @@ namespace parrot {
         Entity     m_camera_secondary;
         bool       m_use_primary_camera = false;
 
+        EditorCamera m_editor_camera;
+
         int m_gizmo_type = -1;
 
         HierarchyPanel m_hierarchy_panel;
